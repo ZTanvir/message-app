@@ -1,0 +1,44 @@
+{
+  "name": "message-app-server",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "nodejs",
+    "express",
+    "postgresql",
+    "message-server",
+    "ts"
+  ],
+  "homepage": "https://github.com/ZTanvir/message-app#readme",
+  "bugs": {
+    "url": "https://github.com/ZTanvir/message-app/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZTanvir/message-app.git"
+  },
+  "license": "MIT",
+  "author": "zahirul islam",
+  "type": "module",
+  "main": "app.ts",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon --exec tsx src/server.ts",
+    "production": "cross-env NODE_ENV=production nodemon --exec tsx src/server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.2",
+    "cross-env": "^10.1.0",
+    "eslint": "^10.8.0",
+    "nodemon": "^3.1.14",
+    "tsx": "^4.23.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.65.0"
+  }
+}
