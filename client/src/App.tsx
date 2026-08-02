@@ -1,10 +1,11 @@
+import AuthPage from "./pages/auth";
 import "./App.css";
 
 function App() {
   return (
-    <>
-      <h1>Hello clients</h1>
-    </>
+    <div className="">
+      <AuthPage />
+    </div>
   );
 }
 
