@@ -1,11 +1,15 @@
 import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router";
 
 export default function Login() {
   return (
     <section className="space-y-4 px-3">
       <h2 className="text-4xl font-bold">Welcome back</h2>
       <p className="text-xl text-gray-800">
-        New to Odin Messaging App? Create an account
+        New to Odin Messaging App?{" "}
+        <Link className="font-bold text-orange-600" to={"/signup"}>
+          Create an account
+        </Link>
       </p>
       <form id="loginForm" className="flex flex-col gap-y-3 text-gray-800">
         <div className="flex flex-col gap-y-1">
