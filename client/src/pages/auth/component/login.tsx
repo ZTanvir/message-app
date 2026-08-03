@@ -11,7 +11,7 @@ export default function Login() {
         <div className="flex flex-col gap-y-1">
           <label htmlFor="email">Email</label>
           <input
-            className="h-10 rounded-lg border border-gray-200 px-2 py-1 focus:outline-1 focus:outline-gray-400"
+            className="input-custom"
             type="email"
             name="email"
             id="email"
@@ -21,7 +21,7 @@ export default function Login() {
         <div className="flex flex-col gap-y-1">
           <label htmlFor="password">Password</label>
           <input
-            className="h-10 rounded-lg border border-gray-200 px-2 py-1 focus:outline-1 focus:outline-gray-400"
+            className="input-custom"
             type="password"
             name="password"
             id="password"

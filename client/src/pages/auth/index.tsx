@@ -1,6 +1,7 @@
 import Login from "./component/login";
 import appSampleImg from "../../assets/images/dashboard-messaging-4067c248.png";
 import logImg from "../../../public/logo.png";
+import SignUp from "./component/signUp";
 
 export default function AuthPage() {
   return (
@@ -10,7 +11,8 @@ export default function AuthPage() {
           <img src={logImg} alt="logo" />
           <span className="text-3xl">Odin Messaging App</span>
         </h1>
-        <Login />
+        {/* <Login /> */}
+        <SignUp />
       </section>
       <div className="hidden lg:block lg:basis-2/3">
         <img
