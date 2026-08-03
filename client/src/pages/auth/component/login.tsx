@@ -7,7 +7,7 @@ export default function Login() {
       <p className="text-xl text-gray-800">
         New to Odin Messaging App? Create an account
       </p>
-      <form className="flex flex-col gap-y-3 text-gray-800">
+      <form id="loginForm" className="flex flex-col gap-y-3 text-gray-800">
         <div className="flex flex-col gap-y-1">
           <label htmlFor="email">Email</label>
           <input
@@ -16,6 +16,7 @@ export default function Login() {
             name="email"
             id="email"
             placeholder="Enter your email"
+            autoComplete="email"
           />
         </div>
         <div className="flex flex-col gap-y-1">

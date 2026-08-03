@@ -1,6 +1,6 @@
 export default function SignUp() {
   return (
-    <form className="flex flex-col gap-y-3 text-gray-800">
+    <form id="signUpForm" className="flex flex-col gap-y-3 text-gray-800">
       <h2 className="text-4xl font-bold">Sign up</h2>
       <p className="text-xl text-gray-800">Already have an account? Login</p>
       <div className="flex flex-col gap-y-1">
@@ -33,6 +33,7 @@ export default function SignUp() {
           name="email"
           id="email"
           placeholder="Enter your email"
+          autoComplete="email"
         />
       </div>
 
