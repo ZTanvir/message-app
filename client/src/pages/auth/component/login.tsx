@@ -1,17 +1,29 @@
 import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 import { Link } from "react-router";
 
 export default function Login() {
+  const [loginFormValues, setLoginFormValues] = useState({
+    email: "",
+    password: "",
+  });
+  const handleLoginSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  };
   return (
     <section className="space-y-4 px-3">
-      <h2 className="text-4xl font-bold">Welcome back</h2>
-      <p className="text-xl text-gray-800">
+      <h2 className="text-3xl font-bold md:text-4xl">Welcome back</h2>
+      <p className="text-lg text-gray-400 md:text-xl">
         New to Odin Messaging App?{" "}
         <Link className="font-bold text-orange-600" to={"/signup"}>
           Create an account
         </Link>
       </p>
-      <form id="loginForm" className="flex flex-col gap-y-3 text-gray-800">
+      <form
+        onSubmit={handleLoginSubmit}
+        id="loginForm"
+        className="flex flex-col gap-y-3 text-gray-800"
+      >
         <div className="flex flex-col gap-y-1">
           <label htmlFor="email">Email</label>
           <input
@@ -21,6 +33,13 @@ export default function Login() {
             id="email"
             placeholder="Enter your email"
             autoComplete="email"
+            value={loginFormValues.email}
+            onChange={(e) =>
+              setLoginFormValues((prev) => ({
+                ...prev,
+                email: e.target.value,
+              }))
+            }
           />
         </div>
         <div className="flex flex-col gap-y-1">
@@ -30,6 +49,13 @@ export default function Login() {
             type="password"
             name="password"
             id="password"
+            value={loginFormValues.password}
+            onChange={(e) =>
+              setLoginFormValues((prev) => ({
+                ...prev,
+                password: e.target.value,
+              }))
+            }
           />
         </div>
         <button
@@ -46,6 +72,7 @@ export default function Login() {
           <span>Try a demo account</span>
         </button>
       </form>
+      <p>{JSON.stringify(loginFormValues)}</p>
     </section>
   );
 }

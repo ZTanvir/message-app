@@ -3,8 +3,8 @@ import { Link } from "react-router";
 export default function SignUp() {
   return (
     <form id="signUpForm" className="flex flex-col gap-y-3 text-gray-800">
-      <h2 className="text-4xl font-bold">Sign up</h2>
-      <p className="text-xl text-gray-800">
+      <h2 className="text-3xl font-bold md:text-4xl">Sign up</h2>
+      <p className="text-lg text-gray-400 md:text-xl">
         Already have an account?{" "}
         <Link className="font-bold text-orange-600" to={"/login"}>
           Login
