@@ -1,15 +1,33 @@
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { Link } from "react-router";
+import { LoginFormSchema } from "../../../utils/schemas/validators";
+import z from "zod";
+import clsx from "clsx";
+
+type FormErrors = {
+  email?: string[];
+  password?: string[];
+};
 
 export default function Login() {
   const [loginFormValues, setLoginFormValues] = useState({
     email: "",
     password: "",
   });
+  const [formErrors, setFormErrors] = useState<null | FormErrors>(null);
+
   const handleLoginSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const result = LoginFormSchema.safeParse(loginFormValues);
+    if (!result.success) {
+      const formatErrors = z.flattenError(result.error);
+      setFormErrors(formatErrors.fieldErrors);
+    } else {
+      console.log(result.data);
+    }
   };
+
   return (
     <section className="space-y-4 px-3">
       <h2 className="text-3xl font-bold md:text-4xl">Welcome back</h2>
@@ -27,7 +45,10 @@ export default function Login() {
         <div className="flex flex-col gap-y-1">
           <label htmlFor="email">Email</label>
           <input
-            className="input-custom"
+            className={clsx(
+              "input-custom",
+              formErrors?.email && "outline-1 outline-red-400",
+            )}
             type="email"
             name="email"
             id="email"
@@ -41,11 +62,19 @@ export default function Login() {
               }))
             }
           />
+          {formErrors?.email?.map((err, index) => (
+            <p className="text-md text-red-400" key={index}>
+              {err}
+            </p>
+          ))}
         </div>
         <div className="flex flex-col gap-y-1">
           <label htmlFor="password">Password</label>
           <input
-            className="input-custom"
+            className={clsx(
+              "input-custom",
+              formErrors?.email && "outline-1 outline-red-400",
+            )}
             type="password"
             name="password"
             id="password"
@@ -57,10 +86,16 @@ export default function Login() {
               }))
             }
           />
+          {formErrors?.password?.map((err, index) => (
+            <p className="text-md text-red-400" key={index}>
+              {err}
+            </p>
+          ))}
         </div>
         <button
           className="rounded-lg bg-orange-600 p-2 font-bold text-white transition-colors duration-100 hover:cursor-pointer hover:bg-orange-500 focus:bg-orange-500"
           type="submit"
+          formNoValidate
         >
           Log in
         </button>
