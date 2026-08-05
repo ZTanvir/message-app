@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { LoginFormSchema } from "../../../utils/schemas/validators";
 import z from "zod";
-import clsx from "clsx";
+import { cn } from "../../../utils/schemas/cn";
 
 type FormErrors = {
   email?: string[];
@@ -24,6 +24,7 @@ export default function Login() {
       const formatErrors = z.flattenError(result.error);
       setFormErrors(formatErrors.fieldErrors);
     } else {
+      setFormErrors(null);
       console.log(result.data);
     }
   };
@@ -45,7 +46,7 @@ export default function Login() {
         <div className="flex flex-col gap-y-1">
           <label htmlFor="email">Email</label>
           <input
-            className={clsx(
+            className={cn(
               "input-custom",
               formErrors?.email && "outline-1 outline-red-400",
             )}
@@ -71,7 +72,7 @@ export default function Login() {
         <div className="flex flex-col gap-y-1">
           <label htmlFor="password">Password</label>
           <input
-            className={clsx(
+            className={cn(
               "input-custom",
               formErrors?.email && "outline-1 outline-red-400",
             )}
@@ -107,7 +108,6 @@ export default function Login() {
           <span>Try a demo account</span>
         </button>
       </form>
-      <p>{JSON.stringify(loginFormValues)}</p>
     </section>
   );
 }
