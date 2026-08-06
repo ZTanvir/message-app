@@ -27,8 +27,11 @@
     "test": "cross-env NODE_ENV=test nodemon --exec tsx src/server.ts"
   },
   "dependencies": {
+    "@types/morgan": "^1.9.10",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "helmet": "^8.3.0",
+    "morgan": "^1.11.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
