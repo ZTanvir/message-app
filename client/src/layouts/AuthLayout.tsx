@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
 import appSampleImg from "../assets/images/dashboard-messaging-4067c248.png";
-import logoImg from "../../public/logo.png";
+import logoImg from "../assets/images/logo.png";
 
 export default function AuthLayout() {
   return (

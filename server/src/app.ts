@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(helmet());
 
-app.get("/health", (req, res) => {
+app.get("/health", async (req, res) => {
   res.json({
     status: "ok",
     timeStamp: new Date().toISOString(),
