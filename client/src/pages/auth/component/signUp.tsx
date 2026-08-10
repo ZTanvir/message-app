@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { SignUpFormSchema } from "../../../utils/schemas/validators";
 import z from "zod";
 import { cn } from "../../../utils/schemas/cn";
+import { SignUpValidationSchema as SignUpFormSchema } from "@message-app/shared/zodSchemas/validationSchema";
 
 type FormErrors = {
   first_name?: string[];

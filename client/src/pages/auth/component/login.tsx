@@ -1,9 +1,9 @@
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { Link } from "react-router";
-import { LoginFormSchema } from "../../../utils/schemas/validators";
 import z from "zod";
 import { cn } from "../../../utils/schemas/cn";
+import { LoginValidationSchema as LoginFormSchema } from "@message-app/shared/zodSchemas/validationSchema";
 
 type FormErrors = {
   email?: string[];

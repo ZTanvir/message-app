@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const LoginFormSchema = z.object({
+export const LoginValidationSchema = z.object({
   email: z.email().trim(),
   password: z
     .string()
@@ -10,7 +10,7 @@ export const LoginFormSchema = z.object({
     .regex(/\d/, "Password must contain at least one number"),
 });
 
-export const SignUpFormSchema = z.object({
+export const SignUpValidationSchema = z.object({
   first_name: z
     .string()
     .trim()
