@@ -8,7 +8,7 @@ const result = envSchema.safeParse(import.meta.env);
 
 if (!result.success) {
   const formatError = z.prettifyError(result.error);
-  console.error(formatError);
+  throw new Error(formatError);
 }
 
 const viteEnv = result.data;
