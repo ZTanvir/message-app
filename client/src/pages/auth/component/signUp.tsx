@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import z from "zod";
 import { cn } from "../../../utils/schemas/cn";
 import { SignUpValidationSchema as SignUpFormSchema } from "@message-app/shared/zodSchemas/validationSchema";
+import authService from "../../../services/authService";
 
 type FormErrors = {
   first_name?: string[];
@@ -20,7 +21,9 @@ export default function SignUp() {
   });
   const [formErrors, setFormErrors] = useState<null | FormErrors>(null);
 
-  const handleSignUpSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSignUpSubmit = async (
+    event: React.SubmitEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
     const result = SignUpFormSchema.safeParse(SignUpFormValues);
     if (!result.success) {
@@ -28,7 +31,11 @@ export default function SignUp() {
       setFormErrors(formatErrors.fieldErrors);
     } else {
       setFormErrors(null);
-      console.log(result.data);
+      const data = await authService.addUser(result.data);
+      if (data.error) {
+        setFormErrors(data.details);
+      }
+      console.log("data", data);
     }
   };
 
