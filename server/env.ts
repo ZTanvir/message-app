@@ -37,6 +37,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().positive(),
   //   Database
   DATABASE_URL: z.string().startsWith("postgresql://"),
+  JWT_SECRET: z.string().min(32, "Jwt secret must contain 32 characters"),
 });
 
 type Env = z.infer<typeof envSchema>;
