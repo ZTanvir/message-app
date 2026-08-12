@@ -12,7 +12,8 @@ type JwtPayload = {
 const cookieExtractor = function (req: Request) {
   let token = null;
   if (req && req.cookies) {
-    token = req.cookies["jwt"];
+    token = req.cookies["token"];
+    console.log("token", token);
   }
   return token;
 };

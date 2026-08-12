@@ -4,6 +4,7 @@ import z from "zod";
 import { cn } from "../../../utils/schemas/cn";
 import { SignUpValidationSchema as SignUpFormSchema } from "@message-app/shared/zodSchemas/validationSchema";
 import authService from "../../../services/authService";
+import { useNavigate } from "react-router";
 
 type FormErrors = {
   first_name?: string[];
@@ -20,6 +21,7 @@ export default function SignUp() {
     password: "",
   });
   const [formErrors, setFormErrors] = useState<null | FormErrors>(null);
+  const navigate = useNavigate();
 
   const handleSignUpSubmit = async (
     event: React.SubmitEvent<HTMLFormElement>,
@@ -35,7 +37,7 @@ export default function SignUp() {
       if (data.error) {
         setFormErrors(data.details);
       }
-      console.log("data", data);
+      if (data.success) navigate("/");
     }
   };
 
