@@ -12,10 +12,12 @@ export async function userRegistration(
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
 
     const data = await res.json();
+    console.log("registration", data);
     if (!data) throw new Error("Invalid server response check server.");
     return data;
   } catch (error) {

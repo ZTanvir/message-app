@@ -13,7 +13,6 @@ const cookieExtractor = function (req: Request) {
   let token = null;
   if (req && req.cookies) {
     token = req.cookies["token"];
-    console.log("token", token);
   }
   return token;
 };
@@ -33,8 +32,10 @@ export const setupJwtStrategy = (passport: PassportStatic) => {
           },
           select: {
             email: true,
+            id: true,
           },
         });
+
         if (user) return done(null, user);
         return done(null, false);
       } catch (error) {

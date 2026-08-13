@@ -22,12 +22,6 @@ app.use(
   }),
 );
 
-app.get("/", (req, res) => {
-  console.log("raw cookie header", req.headers.cookie);
-  console.log("Parsed cookies", JSON.stringify(req.cookies));
-  res.json({ cookies: req.cookies });
-});
-
 app.get("/health", async (req, res) => {
   res.json({
     status: "ok",
