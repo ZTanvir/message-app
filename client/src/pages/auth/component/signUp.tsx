@@ -5,7 +5,6 @@ import { cn } from "../../../utils/schemas/cn";
 import { SignUpValidationSchema as SignUpFormSchema } from "@message-app/shared/zodSchemas/validationSchema";
 import authService from "../../../services/authService";
 import { useNavigate } from "react-router";
-import { NeutralMessage } from "../../../components/AlertBanner";
 
 type FormErrors = {
   first_name?: string[];
@@ -49,7 +48,6 @@ export default function SignUp() {
       id="signUpForm"
       className="flex flex-col gap-y-3 text-gray-800"
     >
-      <NeutralMessage message="warning" />
       <h2 className="text-3xl font-bold md:text-4xl">Sign up</h2>
       <p className="text-lg text-gray-400 md:text-xl">
         Already have an account?{" "}

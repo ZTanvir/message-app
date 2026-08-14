@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { cn } from "../utils/schemas/cn";
 import {
   ExclamationTriangleIcon,
@@ -8,32 +9,91 @@ import {
 type BannerProps = {
   type: "none" | "success" | "warning" | "negative";
   message: string;
-  className: string;
+  className?: string;
+  iconClass?: string;
+  xMarkClass?: string;
 };
 
-function AlertBanner({ type, message, className }: BannerProps) {
+function AlertBanner({
+  type,
+  message,
+  className,
+  iconClass,
+  xMarkClass,
+}: BannerProps) {
+  const [isFadeOut, setIsFadeOut] = useState(false);
   const icons = {
-    none: <ExclamationCircleIcon className="h-5 w-5 text-white" />,
-    warning: <ExclamationTriangleIcon />,
-    success: <CheckCircleIcon />,
-    negative: <ExclamationTriangleIcon />,
+    none: <ExclamationCircleIcon className="h-5 w-5" />,
+    warning: <ExclamationTriangleIcon className="h-5 w-5" />,
+    success: <CheckCircleIcon className="h-5 w-5" />,
+    negative: <ExclamationTriangleIcon className="h-5 w-5" />,
   };
+
   return (
     <p
       className={cn(
-        "relative flex items-center justify-center gap-x-1 rounded-lg p-2",
+        "relative items-center justify-center gap-x-1 rounded-sm p-2 transition-[display,opacity] transition-discrete duration-500 ease-in-out",
         className,
+        isFadeOut ? "pointer-events-none hidden opacity-0" : "flex opacity-100",
       )}
     >
-      {icons[type]}
+      <span className={iconClass}>{icons[type]}</span>
       {message}
-      <span className="absolute top-0 right-0">
-        <XMarkIcon className="h-5 w-5" />
+      <span
+        title="close"
+        onClick={() => setIsFadeOut(!isFadeOut)}
+        className="absolute right-2 hover:cursor-pointer"
+      >
+        <XMarkIcon className={cn("h-4 w-4", xMarkClass)} />
       </span>
     </p>
   );
 }
 
 export function NeutralMessage({ message }: { message: string }) {
-  return <AlertBanner message={message} type="none" className="bg-gray-500" />;
+  return (
+    <AlertBanner
+      message={message}
+      type="none"
+      className="bg-gray-500 text-white"
+      iconClass="text-white"
+      xMarkClass="text-white"
+    />
+  );
+}
+
+export function SuccessMessage({ message }: { message: string }) {
+  return (
+    <AlertBanner
+      message={message}
+      type="success"
+      className="bg-green-700 text-white"
+      iconClass="text-white"
+      xMarkClass="text-white"
+    />
+  );
+}
+
+export function WarningMessage({ message }: { message: string }) {
+  return (
+    <AlertBanner
+      message={message}
+      type="warning"
+      className="bg-yellow-700 text-gray-900"
+      iconClass="text-gray-900"
+      xMarkClass="text-gray-900"
+    />
+  );
+}
+
+export function AlertMessage({ message }: { message: string }) {
+  return (
+    <AlertBanner
+      message={message}
+      type="negative"
+      className="bg-red-800 text-white"
+      iconClass="text-white"
+      xMarkClass="text-white"
+    />
+  );
 }
