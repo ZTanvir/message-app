@@ -41,6 +41,7 @@ export async function signupController(req: Request, res: Response) {
     });
     return res.status(201).json({
       success: true,
+      message: "Registration complete!",
       user: {
         id: newUser.id,
         email: newUser.email,

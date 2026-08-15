@@ -11,6 +11,7 @@ export function validateBody<T extends z.ZodType>(schema: T) {
     if (!result.success) {
       const formatErrors = z.flattenError(result.error);
       return res.status(400).json({
+        success: false,
         error: "Validation failed",
         details: formatErrors.fieldErrors,
       });

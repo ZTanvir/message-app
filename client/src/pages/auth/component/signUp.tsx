@@ -5,12 +5,19 @@ import { cn } from "../../../utils/schemas/cn";
 import { SignUpValidationSchema as SignUpFormSchema } from "@message-app/shared/zodSchemas/validationSchema";
 import authService from "../../../services/authService";
 import { useNavigate } from "react-router";
+import { AlertMessage, SuccessMessage } from "../../../components/AlertBanner";
+import type { Banner } from "../../../types/componentTypes";
 
 type FormErrors = {
   first_name?: string[];
   last_name?: string[];
   email?: string[];
   password?: string[];
+};
+
+type ServerMessage = {
+  message: string;
+  type: Extract<Banner, "success" | "negative">;
 };
 
 export default function SignUp() {
@@ -21,6 +28,9 @@ export default function SignUp() {
     password: "",
   });
   const [formErrors, setFormErrors] = useState<null | FormErrors>(null);
+  const [serverMessage, setServerMessage] = useState<ServerMessage | null>(
+    null,
+  );
 
   const navigate = useNavigate();
 
@@ -32,13 +42,25 @@ export default function SignUp() {
     if (!result.success) {
       const formatErrors = z.flattenError(result.error);
       setFormErrors(formatErrors.fieldErrors);
+      setServerMessage(null);
     } else {
-      setFormErrors(null);
       const data = await authService.addUser(result.data);
-      if (data.error) {
-        setFormErrors(data.details);
+      if (!data.success) {
+        // form field error
+        if (data.error) {
+          setFormErrors(data.details);
+          return;
+        }
+        setServerMessage({ type: "negative", message: data.message });
+        setFormErrors(null);
+      } else {
+        setFormErrors(null);
+        setServerMessage({ type: "success", message: data.message });
+        const redirectTime = 2000;
+        setTimeout(() => {
+          navigate("/");
+        }, redirectTime);
       }
-      if (data.success) navigate("/");
     }
   };
 
@@ -48,6 +70,13 @@ export default function SignUp() {
       id="signUpForm"
       className="flex flex-col gap-y-3 text-gray-800"
     >
+      {serverMessage && serverMessage.type === "negative" ? (
+        <AlertMessage message={serverMessage.message} />
+      ) : (
+        serverMessage?.message && (
+          <SuccessMessage message={serverMessage?.message} />
+        )
+      )}
       <h2 className="text-3xl font-bold md:text-4xl">Sign up</h2>
       <p className="text-lg text-gray-400 md:text-xl">
         Already have an account?{" "}
@@ -144,6 +173,7 @@ export default function SignUp() {
           type="password"
           name="password"
           id="password"
+          placeholder="Enter your password"
           value={SignUpFormValues["password"]}
           onChange={(e) =>
             setSignUpFromValues((prev) => ({

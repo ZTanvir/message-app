@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { cn } from "../utils/schemas/cn";
+import type { Banner } from "../types/componentTypes";
 import {
   ExclamationTriangleIcon,
   ExclamationCircleIcon,
   XMarkIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
+
 type BannerProps = {
-  type: "none" | "success" | "warning" | "negative";
+  type: Banner;
   message: string;
   className?: string;
   iconClass?: string;
