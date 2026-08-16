@@ -7,6 +7,7 @@ import { LoginValidationSchema as LoginFormSchema } from "@message-app/shared/zo
 import type { Banner } from "../../../types/componentTypes";
 import { AlertMessage, SuccessMessage } from "../../../components/AlertBanner";
 import authService from "../../../services/authService";
+import Spinner from "../../../components/Spinner";
 
 type FormErrors = {
   email?: string[];
@@ -26,11 +27,13 @@ export default function Login() {
   const [serverMessage, setServerMessage] = useState<null | ServerMessage>(
     null,
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLoginSubmit = async (
     event: React.SubmitEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
+    setIsLoading(true);
     const result = LoginFormSchema.safeParse(loginFormValues);
     if (!result.success) {
       const formatErrors = z.flattenError(result.error);
@@ -55,6 +58,7 @@ export default function Login() {
         }, redirectTime);
       }
     }
+    setIsLoading(false);
   };
   const handleResetMsg = () => {
     setServerMessage(null);
@@ -122,6 +126,7 @@ export default function Login() {
             type="password"
             name="password"
             id="password"
+            placeholder="Enter your password"
             value={loginFormValues.password}
             onChange={(e) =>
               setLoginFormValues((prev) => ({
@@ -137,10 +142,11 @@ export default function Login() {
           ))}
         </div>
         <button
-          className="rounded-lg bg-orange-600 p-2 font-bold text-white transition-colors duration-100 hover:cursor-pointer hover:bg-orange-500 focus:bg-orange-500"
+          className="flex items-center justify-center gap-x-2 rounded-lg bg-orange-600 p-2 font-bold text-white transition-colors duration-100 hover:cursor-pointer hover:bg-orange-500 focus:bg-orange-500"
           type="submit"
           formNoValidate
         >
+          {isLoading && <Spinner />}
           Log in
         </button>
         <button

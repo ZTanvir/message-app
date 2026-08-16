@@ -7,6 +7,7 @@ import authService from "../../../services/authService";
 import { useNavigate } from "react-router";
 import { AlertMessage, SuccessMessage } from "../../../components/AlertBanner";
 import type { Banner } from "../../../types/componentTypes";
+import Spinner from "../../../components/Spinner";
 
 type FormErrors = {
   first_name?: string[];
@@ -31,6 +32,7 @@ export default function SignUp() {
   const [serverMessage, setServerMessage] = useState<ServerMessage | null>(
     null,
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -38,6 +40,7 @@ export default function SignUp() {
     event: React.SubmitEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
+    setIsLoading(true);
     const result = SignUpFormSchema.safeParse(SignUpFormValues);
     if (!result.success) {
       const formatErrors = z.flattenError(result.error);
@@ -62,6 +65,7 @@ export default function SignUp() {
         }, redirectTime);
       }
     }
+    setIsLoading(false);
   };
   const handleResetMsg = () => {
     setServerMessage(null);
@@ -198,10 +202,11 @@ export default function SignUp() {
         ))}
       </div>
       <button
-        className="rounded-lg bg-orange-600 p-2 font-bold text-white transition-colors duration-100 hover:cursor-pointer hover:bg-orange-500 focus:bg-orange-500"
+        className="flex items-center justify-center gap-x-2 rounded-lg bg-orange-600 p-2 font-bold text-white transition-colors duration-100 hover:cursor-pointer hover:bg-orange-500 focus:bg-orange-500"
         type="submit"
         formNoValidate
       >
+        {isLoading && <Spinner />}
         Sign up
       </button>
     </form>
