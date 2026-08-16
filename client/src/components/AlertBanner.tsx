@@ -11,6 +11,7 @@ import {
 type BannerProps = {
   type: Banner;
   message: string;
+  handleResetMsg: () => void;
   className?: string;
   iconClass?: string;
   xMarkClass?: string;
@@ -19,6 +20,7 @@ type BannerProps = {
 function AlertBanner({
   type,
   message,
+  handleResetMsg,
   className,
   iconClass,
   xMarkClass,
@@ -30,6 +32,15 @@ function AlertBanner({
     success: <CheckCircleIcon className="h-5 w-5" />,
     negative: <ExclamationTriangleIcon className="h-5 w-5" />,
   };
+
+  const handleClose = () => {
+    setIsFadeOut(true);
+    setTimeout(() => {
+      handleResetMsg();
+    }, 1000);
+  };
+
+  if (!message) return null;
 
   return (
     <p
@@ -43,7 +54,7 @@ function AlertBanner({
       {message}
       <span
         title="close"
-        onClick={() => setIsFadeOut(!isFadeOut)}
+        onClick={handleClose}
         className="absolute right-2 hover:cursor-pointer"
       >
         <XMarkIcon className={cn("h-4 w-4", xMarkClass)} />
@@ -51,11 +62,12 @@ function AlertBanner({
     </p>
   );
 }
-
-export function NeutralMessage({ message }: { message: string }) {
+type MessageProps = { message: string; handleResetMsg: () => void };
+export function NeutralMessage({ message, handleResetMsg }: MessageProps) {
   return (
     <AlertBanner
       message={message}
+      handleResetMsg={handleResetMsg}
       type="none"
       className="bg-gray-500 text-white"
       iconClass="text-white"
@@ -64,10 +76,11 @@ export function NeutralMessage({ message }: { message: string }) {
   );
 }
 
-export function SuccessMessage({ message }: { message: string }) {
+export function SuccessMessage({ message, handleResetMsg }: MessageProps) {
   return (
     <AlertBanner
       message={message}
+      handleResetMsg={handleResetMsg}
       type="success"
       className="bg-green-700 text-white"
       iconClass="text-white"
@@ -76,10 +89,11 @@ export function SuccessMessage({ message }: { message: string }) {
   );
 }
 
-export function WarningMessage({ message }: { message: string }) {
+export function WarningMessage({ message, handleResetMsg }: MessageProps) {
   return (
     <AlertBanner
       message={message}
+      handleResetMsg={handleResetMsg}
       type="warning"
       className="bg-yellow-700 text-gray-900"
       iconClass="text-gray-900"
@@ -88,10 +102,11 @@ export function WarningMessage({ message }: { message: string }) {
   );
 }
 
-export function AlertMessage({ message }: { message: string }) {
+export function AlertMessage({ message, handleResetMsg }: MessageProps) {
   return (
     <AlertBanner
       message={message}
+      handleResetMsg={handleResetMsg}
       type="negative"
       className="bg-red-800 text-white"
       iconClass="text-white"

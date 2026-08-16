@@ -63,6 +63,9 @@ export default function SignUp() {
       }
     }
   };
+  const handleResetMsg = () => {
+    setServerMessage(null);
+  };
 
   return (
     <form
@@ -71,10 +74,16 @@ export default function SignUp() {
       className="flex flex-col gap-y-3 text-gray-800"
     >
       {serverMessage && serverMessage.type === "negative" ? (
-        <AlertMessage message={serverMessage.message} />
+        <AlertMessage
+          handleResetMsg={handleResetMsg}
+          message={serverMessage.message}
+        />
       ) : (
         serverMessage?.message && (
-          <SuccessMessage message={serverMessage?.message} />
+          <SuccessMessage
+            handleResetMsg={handleResetMsg}
+            message={serverMessage?.message}
+          />
         )
       )}
       <h2 className="text-3xl font-bold md:text-4xl">Sign up</h2>

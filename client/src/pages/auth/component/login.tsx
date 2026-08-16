@@ -4,10 +4,17 @@ import { Link } from "react-router";
 import z from "zod";
 import { cn } from "../../../utils/schemas/cn";
 import { LoginValidationSchema as LoginFormSchema } from "@message-app/shared/zodSchemas/validationSchema";
+import type { Banner } from "../../../types/componentTypes";
+import { AlertMessage, SuccessMessage } from "../../../components/AlertBanner";
+import authService from "../../../services/authService";
 
 type FormErrors = {
   email?: string[];
   password?: string[];
+};
+type ServerMessage = {
+  message: string;
+  type: Extract<Banner, "success" | "negative">;
 };
 
 export default function Login() {
@@ -16,21 +23,57 @@ export default function Login() {
     password: "",
   });
   const [formErrors, setFormErrors] = useState<null | FormErrors>(null);
+  const [serverMessage, setServerMessage] = useState<null | ServerMessage>(
+    null,
+  );
 
-  const handleLoginSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+  const handleLoginSubmit = async (
+    event: React.SubmitEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
     const result = LoginFormSchema.safeParse(loginFormValues);
     if (!result.success) {
       const formatErrors = z.flattenError(result.error);
       setFormErrors(formatErrors.fieldErrors);
+      setServerMessage(null);
     } else {
-      setFormErrors(null);
-      console.log(result.data);
+      const data = await authService.loginUser(result.data);
+      if (!data.success) {
+        // form field error
+        if (data.error) {
+          setFormErrors(data.details);
+          return;
+        }
+        setServerMessage({ type: "negative", message: data.message });
+        setFormErrors(null);
+      } else {
+        setFormErrors(null);
+        setServerMessage({ type: "success", message: data.message });
+        const redirectTime = 2000;
+        setTimeout(() => {
+          // navigate("/");
+        }, redirectTime);
+      }
     }
+  };
+  const handleResetMsg = () => {
+    setServerMessage(null);
   };
 
   return (
     <section className="space-y-4 px-3">
+      {serverMessage &&
+        (serverMessage.type === "negative" ? (
+          <AlertMessage
+            handleResetMsg={handleResetMsg}
+            message={serverMessage.message}
+          />
+        ) : (
+          <SuccessMessage
+            handleResetMsg={handleResetMsg}
+            message={serverMessage?.message}
+          />
+        ))}
       <h2 className="text-3xl font-bold md:text-4xl">Welcome back</h2>
       <p className="text-lg text-gray-400 md:text-xl">
         New to Odin Messaging App?{" "}

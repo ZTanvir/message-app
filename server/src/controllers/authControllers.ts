@@ -5,9 +5,37 @@ import env from "../../env.ts";
 import jwt from "jsonwebtoken";
 import { Prisma } from "../../prisma/generated/prisma/client.ts";
 
-export function loginController(req: Request, res: Response) {
-  const formData = req.body;
-  res.json(formData);
+export async function loginController(req: Request, res: Response) {
+  const { email, password } = req.body;
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+    if (!user) {
+      return res.status(401).send({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+    const isPasswordMatch = await bcrypt.compare(password, user.hashPassword);
+    if (!isPasswordMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+    return res.json({
+      success: true,
+      message: "Logged in successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
 }
 export async function signupController(req: Request, res: Response) {
   const { first_name, last_name, email, password } = req.body;
