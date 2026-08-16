@@ -8,6 +8,7 @@ import type { Banner } from "../../../types/componentTypes";
 import { AlertMessage, SuccessMessage } from "../../../components/AlertBanner";
 import authService from "../../../services/authService";
 import Spinner from "../../../components/Spinner";
+import PasswordInput from "../../../components/PasswordInput";
 
 type FormErrors = {
   email?: string[];
@@ -116,22 +117,15 @@ export default function Login() {
             </p>
           ))}
         </div>
-        <div className="flex flex-col gap-y-1">
+        <div className="relative flex flex-col gap-y-1">
           <label htmlFor="password">Password</label>
-          <input
-            className={cn(
-              "input-custom",
-              formErrors?.email && "outline-1 outline-red-400",
-            )}
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Enter your password"
-            value={loginFormValues.password}
-            onChange={(e) =>
+          <PasswordInput
+            formErrors={formErrors}
+            value={loginFormValues["password"]}
+            setPassword={(value: string) =>
               setLoginFormValues((prev) => ({
                 ...prev,
-                password: e.target.value,
+                password: value,
               }))
             }
           />

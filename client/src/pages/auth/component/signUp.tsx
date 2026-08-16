@@ -8,13 +8,8 @@ import { useNavigate } from "react-router";
 import { AlertMessage, SuccessMessage } from "../../../components/AlertBanner";
 import type { Banner } from "../../../types/componentTypes";
 import Spinner from "../../../components/Spinner";
-
-type FormErrors = {
-  first_name?: string[];
-  last_name?: string[];
-  email?: string[];
-  password?: string[];
-};
+import PasswordInput from "../../../components/PasswordInput";
+import type { SignUpFormErrors } from "../../../types/componentTypes";
 
 type ServerMessage = {
   message: string;
@@ -28,7 +23,7 @@ export default function SignUp() {
     email: "",
     password: "",
   });
-  const [formErrors, setFormErrors] = useState<null | FormErrors>(null);
+  const [formErrors, setFormErrors] = useState<null | SignUpFormErrors>(null);
   const [serverMessage, setServerMessage] = useState<ServerMessage | null>(
     null,
   );
@@ -176,22 +171,16 @@ export default function SignUp() {
         ))}
       </div>
 
-      <div className="flex flex-col gap-y-1">
+      <div className="relative flex flex-col gap-y-1">
         <label htmlFor="password">Password</label>
-        <input
-          className={cn(
-            "input-custom",
-            formErrors?.password && "outline-1 outline-red-400",
-          )}
-          type="password"
-          name="password"
-          id="password"
-          placeholder="Enter your password"
+
+        <PasswordInput
+          formErrors={formErrors}
           value={SignUpFormValues["password"]}
-          onChange={(e) =>
+          setPassword={(value: string) =>
             setSignUpFromValues((prev) => ({
               ...prev,
-              password: e.target.value,
+              password: value,
             }))
           }
         />
