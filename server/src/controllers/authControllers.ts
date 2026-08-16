@@ -2,8 +2,8 @@ import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import { prisma } from "../lib/prisma.ts";
 import env from "../../env.ts";
-import jwt from "jsonwebtoken";
 import { Prisma } from "../../prisma/generated/prisma/client.ts";
+import { generateJwt } from "../utils/authentication.ts";
 
 export async function loginController(req: Request, res: Response) {
   const { email, password } = req.body;
@@ -26,9 +26,24 @@ export async function loginController(req: Request, res: Response) {
         message: "Invalid email or password",
       });
     }
+    const token = generateJwt(
+      { id: user.id, email: user.email },
+      env.JWT_SECRET,
+      "7d",
+    );
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
     return res.json({
       success: true,
       message: "Logged in successfully",
+      user: {
+        id: user.id,
+        email: user.email,
+      },
     });
   } catch (error) {
     return res.status(500).json({
@@ -56,10 +71,10 @@ export async function signupController(req: Request, res: Response) {
         profile: true,
       },
     });
-    const token = jwt.sign(
+    const token = generateJwt(
       { id: newUser.id, email: newUser.email },
       env.JWT_SECRET,
-      { expiresIn: "7d" },
+      "7d",
     );
     res.cookie("token", token, {
       httpOnly: true,
