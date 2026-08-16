@@ -9,6 +9,7 @@ import { AlertMessage, SuccessMessage } from "../../../components/AlertBanner";
 import authService from "../../../services/authService";
 import Spinner from "../../../components/Spinner";
 import PasswordInput from "../../../components/PasswordInput";
+import { useNavigate } from "react-router";
 
 type FormErrors = {
   email?: string[];
@@ -29,37 +30,47 @@ export default function Login() {
     null,
   );
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLoginSubmit = async (
     event: React.SubmitEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
     setIsLoading(true);
-    const result = LoginFormSchema.safeParse(loginFormValues);
-    if (!result.success) {
-      const formatErrors = z.flattenError(result.error);
-      setFormErrors(formatErrors.fieldErrors);
-      setServerMessage(null);
-    } else {
+    setFormErrors(null);
+    setServerMessage(null);
+    try {
+      const result = LoginFormSchema.safeParse(loginFormValues);
+      if (!result.success) {
+        const formatErrors = z.flattenError(result.error);
+        setFormErrors(formatErrors.fieldErrors);
+        return;
+      }
+
       const data = await authService.loginUser(result.data);
+
       if (!data.success) {
         // form field error
         if (data.error) {
           setFormErrors(data.details);
-          return;
+        } else {
+          setServerMessage({ type: "negative", message: data.message });
         }
-        setServerMessage({ type: "negative", message: data.message });
-        setFormErrors(null);
-      } else {
-        setFormErrors(null);
-        setServerMessage({ type: "success", message: data.message });
-        const redirectTime = 2000;
-        setTimeout(() => {
-          // navigate("/");
-        }, redirectTime);
+        return;
       }
+      setServerMessage({ type: "success", message: data.message });
+      const redirectTime = 2000;
+      setTimeout(() => {
+        navigate("/");
+      }, redirectTime);
+    } catch (_error) {
+      setServerMessage({
+        type: "negative",
+        message: "Something went wrong. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
   const handleResetMsg = () => {
     setServerMessage(null);
