@@ -16,7 +16,7 @@ export async function loginController(req: Request, res: Response) {
     if (!user) {
       return res.status(401).send({
         success: false,
-        message: "Invalid email or password",
+        message: "User not found",
       });
     }
     const isPasswordMatch = await bcrypt.compare(password, user.hashPassword);

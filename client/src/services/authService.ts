@@ -39,7 +39,6 @@ export async function userLogin(
       credentials: "include",
       body: JSON.stringify(payload),
     });
-
     const data = await res.json();
     console.log("login", data);
     if (!data) throw new Error("Invalid server response check server.");
