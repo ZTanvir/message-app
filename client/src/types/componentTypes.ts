@@ -6,8 +6,3 @@ export type SignUpFormErrors = {
   email?: string[];
   password?: string[];
 };
-
-export type User = {
-  email: string;
-  id: string;
-};

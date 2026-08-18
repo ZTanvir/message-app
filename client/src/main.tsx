@@ -8,17 +8,20 @@ import AuthLayout from "./layouts/AuthLayout";
 import Login from "./pages/auth/component/login";
 import SignUp from "./pages/auth/component/signUp";
 import HomePage from "./pages/home";
+import { AuthContextProvider } from "./contexts/authContext/AuthProvider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Route>
-      </Routes>
+      <AuthContextProvider>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route element={<AuthLayout />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+          </Route>
+        </Routes>
+      </AuthContextProvider>
     </BrowserRouter>
   </StrictMode>,
 );
