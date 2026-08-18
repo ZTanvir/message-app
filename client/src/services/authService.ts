@@ -48,7 +48,24 @@ export async function userLogin(
   }
 }
 
+export async function checkLoggedIn() {
+  try {
+    const res = await fetch(`${apiUrl}/api/auth/isLoggedIn`, {
+      credentials: "include",
+    });
+    console.log("check logged in ", res);
+    if (!res.ok) {
+      throw new Error("Server check failed");
+    }
+    const data = await res.json();
+    return { success: true, user: data.user };
+  } catch (_error) {
+    return { success: false };
+  }
+}
+
 export default {
   addUser: userRegistration,
   loginUser: userLogin,
+  checkLoggedIn,
 };

@@ -104,3 +104,6 @@ export async function signupController(req: Request, res: Response) {
     });
   }
 }
+export async function isLoggedInController(req: Request, res: Response) {
+  res.json({ message: "User logged in.", user: req.user });
+}

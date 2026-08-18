@@ -6,7 +6,10 @@ import {
   SignUpValidationSchema,
 } from "@message-app/shared/zodSchemas/validationSchema.ts";
 import passport from "passport";
-import { signupController } from "../controllers/authControllers.ts";
+import {
+  signupController,
+  isLoggedInController,
+} from "../controllers/authControllers.ts";
 
 const authRoute = Router();
 
@@ -23,11 +26,9 @@ authRoute.post("/logout", (req, res) => {
 });
 
 authRoute.get(
-  "/check",
+  "/isLoggedIn",
   passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    res.json({ message: "Auth done", user: req.user });
-  },
+  isLoggedInController,
 );
 
 export default authRoute;
