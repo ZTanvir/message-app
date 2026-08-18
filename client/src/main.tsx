@@ -10,6 +10,7 @@ import SignUp from "./pages/auth/component/signUp";
 import HomePage from "./pages/home";
 import RequireAuth from "./components/RequireAuth";
 import { AuthContextProvider } from "./contexts/authContext/AuthProvider";
+import { NavLink } from "react-router";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -22,6 +23,8 @@ createRoot(document.getElementById("root")!).render(
             element={
               <RequireAuth>
                 <h1>Welcome to chat</h1>
+                <NavLink to="/login">Login</NavLink>
+                <button>Logout</button>
               </RequireAuth>
             }
           />

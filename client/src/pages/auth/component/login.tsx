@@ -1,6 +1,6 @@
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import z from "zod";
 import { cn } from "../../../utils/schemas/cn";
 import { LoginValidationSchema as LoginFormSchema } from "@message-app/shared/zodSchemas/validationSchema";
@@ -33,6 +33,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { logIn } = useAuthContext();
+  const { state } = useLocation(); // attempted route to visit
 
   const handleLoginSubmit = async (
     event: React.SubmitEvent<HTMLFormElement>,
@@ -65,7 +66,7 @@ export default function Login() {
 
       const redirectTime = 2000;
       setTimeout(() => {
-        navigate("/home");
+        navigate(state?.path || "/home");
       }, redirectTime);
     } catch (_error) {
       setServerMessage({

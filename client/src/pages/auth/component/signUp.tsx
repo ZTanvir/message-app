@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import z from "zod";
 import { cn } from "../../../utils/schemas/cn";
 import { SignUpValidationSchema as SignUpFormSchema } from "@message-app/shared/zodSchemas/validationSchema";
@@ -32,6 +32,7 @@ export default function SignUp() {
 
   const navigate = useNavigate();
   const { logIn } = useAuthContext();
+  const { state } = useLocation(); // attempted route to visit
 
   const handleSignUpSubmit = async (
     event: React.SubmitEvent<HTMLFormElement>,
@@ -63,7 +64,7 @@ export default function SignUp() {
 
       const redirectTime = 2000;
       setTimeout(() => {
-        navigate("/home");
+        navigate(state?.path || "/home");
       }, redirectTime);
     } catch (_error) {
       setServerMessage({

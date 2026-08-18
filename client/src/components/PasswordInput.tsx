@@ -36,9 +36,9 @@ export default function PasswordInput({
         }}
       >
         {isPasswordVisible ? (
-          <EyeSlashIcon className={cn("h-5 w-5", iconClass)} />
+          <EyeSlashIcon className={cn("h-5 w-5 text-gray-600", iconClass)} />
         ) : (
-          <EyeIcon className={cn("h-5 w-5", iconClass)} />
+          <EyeIcon className={cn("h-5 w-5 text-gray-600", iconClass)} />
         )}
       </span>
     </>

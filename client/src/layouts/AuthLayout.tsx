@@ -1,8 +1,12 @@
 import { Outlet } from "react-router";
 import appSampleImg from "../assets/images/dashboard-messaging-4067c248.png";
 import logoImg from "../assets/images/logo.png";
+import { useAuthContext } from "../hooks/contextConsume";
+import { Navigate } from "react-router";
 
 export default function AuthLayout() {
+  const { user } = useAuthContext();
+  if (user) return <Navigate to="/home" replace />;
   return (
     <main className="flex min-h-screen justify-center px-2 lg:justify-start lg:px-0">
       <section className="rounded-lg p-4 md:self-center md:border md:border-orange-600 md:p-12 md:shadow-md lg:min-w-1/3 lg:border-0 lg:py-0 lg:shadow-none">
