@@ -10,6 +10,7 @@ import authService from "../../../services/authService";
 import Spinner from "../../../components/Spinner";
 import PasswordInput from "../../../components/PasswordInput";
 import { useNavigate } from "react-router";
+import { useAuthContext } from "../../../hooks/contextConsume";
 
 type FormErrors = {
   email?: string[];
@@ -31,6 +32,7 @@ export default function Login() {
   );
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { logIn } = useAuthContext();
 
   const handleLoginSubmit = async (
     event: React.SubmitEvent<HTMLFormElement>,
@@ -59,9 +61,11 @@ export default function Login() {
         return;
       }
       setServerMessage({ type: "success", message: data.message });
+      logIn(data.user);
+
       const redirectTime = 2000;
       setTimeout(() => {
-        navigate("/");
+        navigate("/home");
       }, redirectTime);
     } catch (_error) {
       setServerMessage({

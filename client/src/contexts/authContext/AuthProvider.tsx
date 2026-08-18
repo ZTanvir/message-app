@@ -6,10 +6,10 @@ export function AuthContextProvider({
 }: {
   children: React.ReactElement;
 }) {
-  const { authed, user, logIn, logOut } = useAuth();
+  const { user, logIn, logOut } = useAuth();
 
   return (
-    <AuthContext.Provider value={{ authed, user, logIn, logOut }}>
+    <AuthContext.Provider value={{ user, logIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );

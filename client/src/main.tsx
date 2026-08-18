@@ -8,6 +8,7 @@ import AuthLayout from "./layouts/AuthLayout";
 import Login from "./pages/auth/component/login";
 import SignUp from "./pages/auth/component/signUp";
 import HomePage from "./pages/home";
+import RequireAuth from "./components/RequireAuth";
 import { AuthContextProvider } from "./contexts/authContext/AuthProvider";
 
 createRoot(document.getElementById("root")!).render(
@@ -16,6 +17,14 @@ createRoot(document.getElementById("root")!).render(
       <AuthContextProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route
+            path="/home"
+            element={
+              <RequireAuth>
+                <h1>Welcome to chat</h1>
+              </RequireAuth>
+            }
+          />
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />

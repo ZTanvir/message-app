@@ -10,6 +10,7 @@ import type { Banner } from "../../../types/componentTypes";
 import Spinner from "../../../components/Spinner";
 import PasswordInput from "../../../components/PasswordInput";
 import type { SignUpFormErrors } from "../../../types/componentTypes";
+import { useAuthContext } from "../../../hooks/contextConsume";
 
 type ServerMessage = {
   message: string;
@@ -30,6 +31,7 @@ export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { logIn } = useAuthContext();
 
   const handleSignUpSubmit = async (
     event: React.SubmitEvent<HTMLFormElement>,
@@ -57,9 +59,11 @@ export default function SignUp() {
         return;
       }
       setServerMessage({ type: "success", message: data.message });
+      logIn(data.user);
+
       const redirectTime = 2000;
       setTimeout(() => {
-        navigate("/");
+        navigate("/home");
       }, redirectTime);
     } catch (_error) {
       setServerMessage({
