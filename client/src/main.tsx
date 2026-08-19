@@ -1,8 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import viteEnv from "../env";
+import _viteEnv from "../env";
 import { BrowserRouter, Routes, Route } from "react-router";
 import HomePage from "./pages/home";
 import AuthLayout from "./layouts/AuthLayout";
