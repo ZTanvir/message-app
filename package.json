@@ -1,0 +1,21 @@
+{
+  "name": "message-app",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZTanvir/message-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZTanvir/message-app/issues"
+  },
+  "homepage": "https://github.com/ZTanvir/message-app#readme"
+}

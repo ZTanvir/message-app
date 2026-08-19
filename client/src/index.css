@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+@layer components {
+  .input-custom {
+    @apply h-10 rounded-lg border border-gray-200 px-2 py-1 focus:outline-1 focus:outline-gray-400;
+  }
+}
