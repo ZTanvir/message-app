@@ -20,7 +20,6 @@ export async function userRegistration(
     });
 
     const data = await res.json();
-    console.log("registration", data);
     if (!data) throw new Error("Invalid server response check server.");
     return data;
   } catch (error) {
@@ -40,7 +39,6 @@ export async function userLogin(
       body: JSON.stringify(payload),
     });
     const data = await res.json();
-    console.log("login", data);
     if (!data) throw new Error("Invalid server response check server.");
     return data;
   } catch (error) {
@@ -53,9 +51,8 @@ export async function checkLoggedIn() {
     const res = await fetch(`${apiUrl}/api/auth/isLoggedIn`, {
       credentials: "include",
     });
-    console.log("check logged in ", res);
     if (!res.ok) {
-      throw new Error("Server check failed");
+      throw new Error("User not authenticated");
     }
     const data = await res.json();
     return { success: true, user: data.user };

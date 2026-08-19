@@ -4,30 +4,24 @@ import "./index.css";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import viteEnv from "../env";
 import { BrowserRouter, Routes, Route } from "react-router";
+import HomePage from "./pages/home";
 import AuthLayout from "./layouts/AuthLayout";
 import Login from "./pages/auth/component/login";
 import SignUp from "./pages/auth/component/signUp";
-import HomePage from "./pages/home";
-import RequireAuth from "./components/RequireAuth";
 import { AuthContextProvider } from "./contexts/authContext/AuthProvider";
-import { NavLink } from "react-router";
+import DashboardLayout from "./layouts/DashboardLayout";
+import AppPage from "./pages/app";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <AuthContextProvider>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route
-            path="/home"
-            element={
-              <RequireAuth>
-                <h1>Welcome to chat</h1>
-                <NavLink to="/login">Login</NavLink>
-                <button>Logout</button>
-              </RequireAuth>
-            }
-          />
+          <Route path="/" element={<AppPage />} />
+          <Route element={<DashboardLayout />}>
+            <Route path="/home" element={<HomePage />} />
+          </Route>
+
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
