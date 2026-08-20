@@ -6,13 +6,38 @@ import {
   ArrowLeftStartOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { useAuthContext } from "../hooks/contextConsume";
+import authService from "../services/authService";
+import { useNavigate } from "react-router";
+import { useState } from "react";
+import Spinner from "./Spinner";
+
 export default function Sidebar() {
-  const { user } = useAuthContext();
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const { user, logOut } = useAuthContext();
+  const navigate = useNavigate();
+
   const IconClass = "h-8 w-8 text-white lg:h-10 lg:w-10";
   const activeLinkClass =
     "self-center border-l-4 border-l-orange-600/50 bg-linear-to-r from-orange-300/20 to-orange-500/60 p-2 ";
   const inactiveLinkClass =
     "cursor-pointer self-center p-2 border-l-4 border-l-transparent";
+
+  const handleLogoutBtn = async () => {
+    if (isLoggedOut) return;
+    setIsLoggedOut(true);
+    const result = await authService.logoutUser();
+    if (result?.success) {
+      const timer = 1000;
+      setTimeout(() => {
+        logOut();
+        navigate("/login");
+      }, timer);
+      return;
+    }
+    // logout failed toast
+    setIsLoggedOut(false);
+  };
+
   return (
     <aside className="h-content flex w-full cursor-pointer gap-x-6 bg-gray-900 pr-2 pl-2 lg:h-full lg:flex-col lg:gap-y-4 lg:p-0 lg:pt-2 lg:pb-2">
       <Logo classname="w-10 h-10 self-center" />
@@ -36,15 +61,23 @@ export default function Sidebar() {
           </NavLink>
         </div>
         <div className="flex gap-x-4 lg:flex-col lg:gap-y-4">
-          <NavLink
-            className={({ isActive }) =>
-              isActive ? `${activeLinkClass}` : `${inactiveLinkClass}`
-            }
-            to="/logout"
+          <button
+            title="logout"
+            onClick={handleLogoutBtn}
+            className={`${inactiveLinkClass}`}
           >
-            <ArrowLeftStartOnRectangleIcon className={`${IconClass}`} />
+            {isLoggedOut ? (
+              <Spinner />
+            ) : (
+              <ArrowLeftStartOnRectangleIcon className={`${IconClass}`} />
+            )}
+          </button>
+          <NavLink
+            className={`${inactiveLinkClass}`}
+            to={`/profile/${user?.id}`}
+          >
+            Profile
           </NavLink>
-          <NavLink to={`/profile/${user?.id}`}>Profile</NavLink>
         </div>
       </nav>
     </aside>

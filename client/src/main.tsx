@@ -10,6 +10,7 @@ import SignUp from "./pages/auth/component/signUp";
 import { AuthContextProvider } from "./contexts/authContext/AuthProvider";
 import DashboardLayout from "./layouts/DashboardLayout";
 import AppPage from "./pages/app";
+import ProfilePage from "./pages/profile";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -19,7 +20,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<AppPage />} />
           <Route element={<DashboardLayout />}>
             <Route path="/home" element={<HomePage />} />
-            <Route path="/profile/:userId" element={<HomePage />} />
+            <Route path="/profile/:userId" element={<ProfilePage />} />
           </Route>
 
           <Route element={<AuthLayout />}>

@@ -107,3 +107,11 @@ export async function signupController(req: Request, res: Response) {
 export async function isLoggedInController(req: Request, res: Response) {
   res.json({ message: "User logged in.", user: req.user });
 }
+export function logoutController(req: Request, res: Response) {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+  });
+  res.status(200).json({ message: "Successfully logout" });
+}
