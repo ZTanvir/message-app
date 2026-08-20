@@ -19,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<AppPage />} />
           <Route element={<DashboardLayout />}>
             <Route path="/home" element={<HomePage />} />
+            <Route path="/profile/:userId" element={<HomePage />} />
           </Route>
 
           <Route element={<AuthLayout />}>
