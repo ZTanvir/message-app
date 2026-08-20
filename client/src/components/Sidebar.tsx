@@ -11,7 +11,8 @@ export default function Sidebar() {
   const IconClass = "h-8 w-8 text-white lg:h-10 lg:w-10";
   const activeLinkClass =
     "self-center border-l-4 border-l-orange-600/50 bg-linear-to-r from-orange-300/20 to-orange-500/60 p-2 ";
-  const inactiveLinkClass = "cursor-pointer self-center";
+  const inactiveLinkClass =
+    "cursor-pointer self-center p-2 border-l-4 border-l-transparent";
   return (
     <aside className="h-content flex w-full cursor-pointer gap-x-6 bg-gray-900 pr-2 pl-2 lg:h-full lg:flex-col lg:gap-y-4 lg:p-0 lg:pt-2 lg:pb-2">
       <Logo classname="w-10 h-10 self-center" />
