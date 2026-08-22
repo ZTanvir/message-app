@@ -11,13 +11,15 @@ export default function ProfilePage() {
   const { userId } = useParams();
   console.log(userId);
   return (
-    <div className="flex-1">
+    <div className="flex flex-1 flex-col">
       <header className="flex justify-between bg-white p-6 text-xl shadow-sm">
         <span className="">My Messaging Profile</span>
         <div className="">profile name</div>
       </header>
-      <main className="grid gap-x-4 bg-gray-200/50 p-4 lg:grid-cols-[3fr_1fr]">
-        <div className="">
+      <main className="grid flex-1 auto-rows-auto grid-rows-[max-content] gap-y-4 bg-gray-200/50 p-4 lg:grid-cols-[3fr_1fr] lg:gap-x-4">
+        {/* profile and about me */}
+        <div className="space-y-4">
+          {/* profile */}
           <Card className="relative flex h-150 flex-col overflow-hidden p-0">
             <div className="relative flex-1 bg-linear-to-b from-slate-50 via-gray-100 to-gray-300">
               <button className="absolute top-5 right-5 flex cursor-pointer items-center gap-x-2 rounded-lg bg-gray-400 p-2 text-white hover:cursor-pointer">
@@ -42,7 +44,8 @@ export default function ProfilePage() {
               </button>
             </div>
           </Card>
-          <Card className="mt-4 flex justify-between">
+          {/* about me */}
+          <Card className="flex justify-between">
             <div>
               <h2 className="text-xl">About me</h2>
             </div>
@@ -51,7 +54,8 @@ export default function ProfilePage() {
             </button>
           </Card>
         </div>
-        <div className="mt-4 lg:m-0">
+        {/* similar profile */}
+        <div className="">
           <Card>
             <h3>Similar profiles</h3>
             {/* profiles */}
