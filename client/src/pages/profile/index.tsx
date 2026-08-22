@@ -6,10 +6,16 @@ import {
   CameraIcon,
 } from "@heroicons/react/24/outline";
 import ProfileImg from "../../components/ProfileImg";
+import { useQuery } from "@tanstack/react-query";
+import profileService from "../../services/profileService";
 
 export default function ProfilePage() {
   const { userId } = useParams();
-  console.log(userId);
+  const { isPending, isError, data } = useQuery({
+    queryKey: ["profile", userId],
+    queryFn: () => profileService.getProfile(userId!),
+    enabled: !!userId,
+  });
   return (
     <div className="flex flex-1 flex-col">
       <header className="flex justify-between bg-white p-6 text-xl shadow-sm">
