@@ -16,6 +16,7 @@ export default function ProfilePage() {
     queryFn: () => profileService.getProfile(userId!),
     enabled: !!userId,
   });
+  console.log(data);
   return (
     <div className="flex flex-1 flex-col">
       <header className="flex justify-between bg-white p-6 text-xl shadow-sm">

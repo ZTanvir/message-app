@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import { setupJwtStrategy } from "./config/passport.ts";
 import authRoute from "./routes/authRoutes.ts";
+import profileRoute from "./routes/profileRoutes.ts";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,6 +32,7 @@ app.get("/health", async (req, res) => {
 });
 
 app.use("/api/auth", authRoute);
+app.use("/api/profile", profileRoute);
 
 export { app };
 export default app;
