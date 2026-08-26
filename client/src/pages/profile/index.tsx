@@ -37,7 +37,7 @@ export default function ProfilePage() {
         {/* profile and about me */}
         <div className="space-y-4">
           {/* profile */}
-          <Card className="relative h-150 overflow-hidden p-0">
+          <Card className="relative flex h-150 flex-col overflow-hidden p-0">
             <div className="relative flex-1 bg-linear-to-b from-slate-50 via-gray-100 to-gray-300">
               <button className="absolute top-5 right-5 flex cursor-pointer items-center gap-x-2 rounded-lg bg-gray-400 p-2 text-white hover:cursor-pointer">
                 <PencilIcon className="h-4 w-4" />
