@@ -12,5 +12,5 @@ export async function getProfile(req: Request, res: Response) {
     where: { userId: normalizeUserId },
   });
   if (!user) throw new AppError("Profile not found", 404);
-  return res.status(200).json({ data: user });
+  return res.status(200).json({ user, success: true });
 }

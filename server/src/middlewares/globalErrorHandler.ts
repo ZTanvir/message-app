@@ -13,7 +13,7 @@ const globalErrorHandler = (
   next: NextFunction,
 ) => {
   const statusCode = err.statusCode || 5000;
-  const message = err.isOperational ? err.statusCode : "Internal Server Error";
+  const message = err.isOperational ? err.message : "Internal Server Error";
   res.status(statusCode).json({
     success: false,
     message,

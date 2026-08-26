@@ -1,25 +1,23 @@
 import { apiUrl } from "./config";
+import type { ApiErrorResponse } from "../types/api";
+import { ApiError } from "./apiError";
+import type { Profile } from "../types/api";
 
-async function getProfile(id: string) {
-  try {
-    const res = await fetch(`${apiUrl}/api/profile/${id}`);
-    if (!res.ok) {
-      throw new Error("Something wrong , please try again");
-    }
-    const data = await res.json();
-    return {
-      success: true,
-      user: data.data,
-    };
-  } catch (error) {
-    return {
+type UserProfile = {
+  user: Profile;
+  success: boolean;
+};
+
+async function getProfile(id: string): Promise<UserProfile> {
+  const res = await fetch(`${apiUrl}/api/profile/${id}`);
+  if (!res.ok) {
+    const errorData: ApiErrorResponse = await res.json().catch((error) => ({
+      message: error.message,
       success: false,
-      errorMessage:
-        error instanceof Error
-          ? error.message
-          : "Something wrong , please try again",
-    };
+    }));
+    throw new ApiError(errorData.message, res.status);
   }
+  return res.json();
 }
 
 export default {
