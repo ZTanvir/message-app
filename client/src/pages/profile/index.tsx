@@ -1,15 +1,14 @@
 import { useParams } from "react-router";
 import Card from "./components/Card";
-import {
-  PencilSquareIcon,
-  PencilIcon,
-  CameraIcon,
-} from "@heroicons/react/24/outline";
+import { PencilIcon, CameraIcon } from "@heroicons/react/24/outline";
 import ProfileImg from "../../components/ProfileImg";
 import { useQuery } from "@tanstack/react-query";
 import profileService from "../../services/profileService";
 import Spinner from "../../components/Spinner";
 import ErrorMessage from "../../components/ErrorMessage";
+import CoverPhotoModal from "./components/CoverPhotoModal";
+import { useRef } from "react";
+import type { DialogHandle } from "../../types/types";
 
 export default function ProfilePage() {
   const { userId } = useParams();
@@ -19,6 +18,7 @@ export default function ProfilePage() {
     enabled: !!userId,
     retry: 1,
   });
+  const coverPhotoDialog = useRef<DialogHandle>(null);
   if (isPending) {
     return <Spinner classname="w-15 h-15 border-4 fixed inset-0 m-auto" />;
   }
@@ -26,6 +26,10 @@ export default function ProfilePage() {
     return <ErrorMessage message={error.message} refetch={refetch} />;
   }
   const fullName = data.user.firstName + " " + data.user.lastName;
+
+  const handleOpenCoverPhotoDialog = () => {
+    coverPhotoDialog.current?.openModal();
+  };
 
   return (
     <div className="flex flex-1 flex-col">
@@ -39,8 +43,11 @@ export default function ProfilePage() {
           {/* profile */}
           <Card className="relative flex h-150 flex-col overflow-hidden p-0">
             <div className="relative flex-1 bg-linear-to-b from-slate-50 via-gray-100 to-gray-300">
-              <button className="absolute top-5 right-5 flex cursor-pointer items-center gap-x-2 rounded-lg bg-gray-400 p-2 text-white hover:cursor-pointer">
-                <PencilIcon className="h-4 w-4" />
+              <button
+                onClick={handleOpenCoverPhotoDialog}
+                className="absolute top-5 right-5 flex items-center gap-x-2 rounded-lg bg-gray-400 p-2 text-white transition-colors duration-300 hover:cursor-pointer hover:bg-gray-400/50"
+              >
+                <CameraIcon className="h-5 w-5" />
                 <span>Edit cover image</span>
               </button>
             </div>
@@ -75,7 +82,7 @@ export default function ProfilePage() {
             <div className="flex justify-between">
               <h2 className="text-xl">About me</h2>
               <button className="cursor-pointer">
-                <PencilSquareIcon className="h-6 w-6 cursor-pointer" />
+                <PencilIcon className="h-6 w-6 cursor-pointer" />
               </button>
             </div>
             {data.user.profession ? (
@@ -93,6 +100,7 @@ export default function ProfilePage() {
           </Card>
         </div>
       </main>
+      <CoverPhotoModal ref={coverPhotoDialog} imageUrl="" />
     </div>
   );
 }
