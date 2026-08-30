@@ -1,5 +1,4 @@
-import viteEnv from "../../env";
-const apiUrl = `${viteEnv.VITE_API_URL}`;
+import { apiUrl } from "./config";
 import {
   LoginValidationSchema,
   SignUpValidationSchema,
@@ -60,9 +59,28 @@ export async function checkLoggedIn() {
     return { success: false };
   }
 }
+export async function logoutUser() {
+  try {
+    const res = await fetch(`${apiUrl}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error("Something went wrong,try again");
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Something went wrong,try again",
+    };
+  }
+}
 
 export default {
   addUser: userRegistration,
   loginUser: userLogin,
   checkLoggedIn,
+  logoutUser,
 };

@@ -9,6 +9,7 @@ import passport from "passport";
 import {
   signupController,
   isLoggedInController,
+  logoutController,
 } from "../controllers/authControllers.ts";
 
 const authRoute = Router();
@@ -20,10 +21,7 @@ authRoute.post(
 );
 authRoute.post("/login", validateBody(LoginValidationSchema), loginController);
 
-authRoute.post("/logout", (req, res) => {
-  res.clearCookie("token");
-  res.status(200).json({ message: "Successfully logout" });
-});
+authRoute.post("/logout", logoutController);
 
 authRoute.get(
   "/isLoggedIn",
