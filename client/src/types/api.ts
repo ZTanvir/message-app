@@ -3,4 +3,12 @@ export type ApiErrorResponse = {
   message: string;
   stack?: string;
 };
-export type { Profile } from "../../../shared/dbSchema";
+export type Profile = {
+  id: string;
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  profession?: string;
+  about?: string;
+  location?: string;
+};

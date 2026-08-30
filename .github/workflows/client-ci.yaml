@@ -6,11 +6,13 @@ on:
     types: [opened, synchronize]
     paths:
       - "client/**"
+      - "shared/**"
   push:
     branches:
       - main
     paths:
       - "client/**"
+      - "shared/**"
 
 jobs:
   build-and-test:

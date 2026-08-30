@@ -4,10 +4,12 @@ on:
     types: [opened, synchronize]
     paths:
       - "server/**"
+      - "shared/**"
   push:
     branches: [main]
     paths:
       - "server/**"
+      - "shared/**"
 
 jobs:
   build-and-test:
