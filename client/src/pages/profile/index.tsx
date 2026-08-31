@@ -19,6 +19,7 @@ export default function ProfilePage() {
     retry: 1,
   });
   const coverPhotoDialog = useRef<DialogHandle>(null);
+  console.log(error);
 
   if (isPending) {
     return <Spinner classname="w-15 h-15 border-4 fixed inset-0 m-auto" />;

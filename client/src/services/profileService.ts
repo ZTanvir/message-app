@@ -9,7 +9,9 @@ type UserProfile = {
 };
 
 async function getProfile(id: string): Promise<UserProfile> {
-  const res = await fetch(`${apiUrl}/api/profile/${id}`);
+  const res = await fetch(`${apiUrl}/api/profile/${id}`, {
+    credentials: "include",
+  });
   if (!res.ok) {
     const errorData: ApiErrorResponse = await res.json().catch((error) => ({
       message: error.message,
@@ -20,6 +22,24 @@ async function getProfile(id: string): Promise<UserProfile> {
   return res.json();
 }
 
+async function uploadAvatarImg(formData: FormData) {
+  const res = await fetch(`${apiUrl}/api/profile/uploadCover`, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+  if (!res.ok) {
+    const errorData: ApiError = await res.json().catch((error) => ({
+      message: error.message,
+      success: false,
+    }));
+    throw new ApiError(errorData.message, res.status);
+  }
+  const result = await res.json();
+  return result;
+}
+
 export default {
   getProfile,
+  uploadAvatarImg,
 };
