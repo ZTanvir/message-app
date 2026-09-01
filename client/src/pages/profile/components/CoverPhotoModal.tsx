@@ -40,7 +40,9 @@ export default function CoverPhotoModal({
     formData.append("cover", file);
     try {
       const data = await profileService.uploadAvatarImg(formData);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
