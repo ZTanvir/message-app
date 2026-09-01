@@ -36,7 +36,6 @@ async function uploadAvatarImg(formData: FormData) {
     throw new ApiError(errorData.message, res.status);
   }
   const result = await res.json();
-  console.log(res);
   return result;
 }
 

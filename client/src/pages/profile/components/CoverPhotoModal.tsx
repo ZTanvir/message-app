@@ -2,12 +2,19 @@ import { useRef, useState, type Ref } from "react";
 import Modal from "../../../components/Modal";
 import type { DialogHandle } from "../../../types/types";
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import viteEnv from "../../../../env";
 import profileService from "../../../services/profileService";
+import { ApiError } from "../../../services/apiError";
+import Spinner from "../../../components/Spinner";
+import { cn } from "../../../utils/schemas/cn";
 
 type CoverPhotoModalProps = {
   ref: Ref<DialogHandle>;
   imageUrl: string;
+};
+
+type ServerResponseMessage = {
+  message: string;
+  type: "success" | "failed";
 };
 
 export default function CoverPhotoModal({
@@ -16,6 +23,9 @@ export default function CoverPhotoModal({
 }: CoverPhotoModalProps) {
   const [imgSrc, setImgSrc] = useState<null | string>(imageUrl);
   const fileInputEl = useRef<HTMLInputElement>(null);
+  const [responseMessage, setResponseMessage] =
+    useState<ServerResponseMessage | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClearImage = () => {
     if (!fileInputEl.current) return;
@@ -39,15 +49,36 @@ export default function CoverPhotoModal({
     const formData = new FormData();
     formData.append("cover", file);
     try {
+      setResponseMessage(null);
+      setIsLoading(true);
       const data = await profileService.uploadAvatarImg(formData);
+      if (data.success) {
+        setResponseMessage({ message: data.message, type: "success" });
+      }
     } catch (error) {
-      console.log(error);
+      if (error instanceof ApiError) {
+        setResponseMessage({ message: error.message, type: "failed" });
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <Modal ref={ref} title="Edit cover image">
       <div>
+        {responseMessage && (
+          <p
+            className={cn(
+              "my-2",
+              responseMessage.type === "success"
+                ? "text-green-600"
+                : "text-red-500",
+            )}
+          >
+            {responseMessage.message}
+          </p>
+        )}
         <div className="relative mt-3 mb-3 rounded-sm border border-dotted border-gray-200 p-3">
           {imgSrc ? (
             <>
@@ -100,8 +131,9 @@ export default function CoverPhotoModal({
 
           <button
             type="submit"
-            className="rounded-sm bg-orange-600 px-5 py-2 font-bold text-white hover:cursor-pointer"
+            className="flex items-center gap-x-2 rounded-sm bg-orange-600 px-5 py-2 font-bold text-white hover:cursor-pointer"
           >
+            {isLoading && <Spinner />}
             Save Changes
           </button>
         </form>

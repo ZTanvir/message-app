@@ -17,15 +17,17 @@ model User {
 }
 
 model Profile {
-  id         Int      @id @default(autoincrement())
-  userId     String   @unique
-  username   String?  @db.VarChar(50)
-  firstName  String?  @db.VarChar(50)
-  lastName   String?  @db.VarChar(50)
-  profession String?  @db.VarChar(50)
-  about      String?  @db.Text
-  location   String?  @db.VarChar(50)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            Int      @id @default(autoincrement())
+  userId        String   @unique
+  username      String?  @db.VarChar(50)
+  firstName     String?  @db.VarChar(50)
+  lastName      String?  @db.VarChar(50)
+  profession    String?  @db.VarChar(50)
+  about         String?  @db.Text
+  location      String?  @db.VarChar(50)
+  coverImgUrl   String?  @db.Text
+  profileImgUrl String?  @db.Text
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
