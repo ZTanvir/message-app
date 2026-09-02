@@ -95,8 +95,10 @@ export default function ProfilePage() {
               </div>
             </section>
             <div className="absolute top-1/2 left-1/2 -translate-1/2 md:left-25 md:-translate-y-1/2">
-              <ProfileImg className="h-40 w-40" />
-              <button className="absolute right-0 bottom-0 cursor-pointer rounded-full bg-gray-300 p-2">
+              <div className="rounded-full bg-white p-1">
+                <ProfileImg className="h-40 w-40" />
+              </div>
+              <button className="absolute right-0 bottom-0 cursor-pointer rounded-full bg-gray-200 p-2 transition-colors duration-300 hover:bg-gray-300/80">
                 <CameraIcon className="h-8 w-8" />
               </button>
             </div>
