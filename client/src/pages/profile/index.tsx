@@ -6,9 +6,12 @@ import { useQuery } from "@tanstack/react-query";
 import profileService from "../../services/profileService";
 import Spinner from "../../components/Spinner";
 import ErrorMessage from "../../components/ErrorMessage";
-import CoverPhotoModal from "./components/CoverPhotoModal";
 import { useRef } from "react";
 import type { DialogHandle } from "../../types/types";
+import viteEnv from "../../../env";
+import { cn } from "../../utils/schemas/cn";
+import CoverPhotoEditContainer from "./components/CoverPhotoEdit";
+import Modal from "../../components/Modal";
 
 export default function ProfilePage() {
   const { userId } = useParams();
@@ -19,7 +22,6 @@ export default function ProfilePage() {
     retry: 1,
   });
   const coverPhotoDialog = useRef<DialogHandle>(null);
-  console.log(error);
 
   if (isPending) {
     return <Spinner classname="w-15 h-15 border-4 fixed inset-0 m-auto" />;
@@ -27,7 +29,9 @@ export default function ProfilePage() {
   if (isError) {
     return <ErrorMessage message={error.message} refetch={refetch} />;
   }
+
   const fullName = data.user.firstName + " " + data.user.lastName;
+  const coverImgUrl = `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/${data.user.coverImgUrl}`;
 
   const handleOpenCoverPhotoDialog = () => {
     coverPhotoDialog.current?.openModal();
@@ -44,7 +48,21 @@ export default function ProfilePage() {
         <div className="space-y-4">
           {/* profile */}
           <Card className="relative flex h-150 flex-col overflow-hidden p-0">
-            <div className="relative flex-1 bg-linear-to-b from-slate-50 via-gray-100 to-gray-300">
+            <div
+              style={
+                data.user.coverImgUrl
+                  ? {
+                      backgroundImage: `url(${coverImgUrl})`,
+                    }
+                  : undefined
+              }
+              className={cn(
+                "relative flex-1",
+                data.user.coverImgUrl
+                  ? "bg-cover bg-center bg-no-repeat"
+                  : "bg-linear-to-b from-slate-50 via-gray-100 to-gray-300",
+              )}
+            >
               <button
                 onClick={handleOpenCoverPhotoDialog}
                 className="absolute top-5 right-5 flex items-center gap-x-2 rounded-lg bg-gray-400 p-2 text-white transition-colors duration-300 hover:cursor-pointer hover:bg-gray-400/50"
@@ -102,7 +120,12 @@ export default function ProfilePage() {
           </Card>
         </div>
       </main>
-      <CoverPhotoModal ref={coverPhotoDialog} imageUrl="" />
+      <Modal title="Edit cover photo." ref={coverPhotoDialog}>
+        <CoverPhotoEditContainer
+          closeModal={() => coverPhotoDialog.current?.closeModal()}
+          imageUrl={coverImgUrl || null}
+        />
+      </Modal>
     </div>
   );
 }

@@ -2,6 +2,8 @@ import type { NextFunction, Request, Response } from "express";
 import { prisma } from "../lib/prisma.ts";
 import AppError from "../utils/appError.ts";
 import multer from "multer";
+import supabase from "../lib/supabase.ts";
+import type { UserTokenData } from "../types/user.ts";
 const storage = multer.memoryStorage();
 const upload = multer({
   storage,
