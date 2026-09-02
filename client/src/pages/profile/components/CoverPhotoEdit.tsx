@@ -6,7 +6,7 @@ import Spinner from "../../../components/Spinner";
 import { cn } from "../../../utils/schemas/cn";
 
 type CoverPhotoModalProps = {
-  closeModal: () => void;
+  onChangePhoto: () => void;
   imageUrl: string | null;
 };
 
@@ -15,9 +15,9 @@ type ServerResponseMessage = {
   type: "success" | "failed";
 };
 
-export default function CoverPhotoContainer({
+export default function CoverPhotoEditContainer({
   imageUrl,
-  closeModal,
+  onChangePhoto,
 }: CoverPhotoModalProps) {
   const [imgSrc, setImgSrc] = useState<null | string>(imageUrl);
   const fileInputEl = useRef<HTMLInputElement>(null);
@@ -51,7 +51,7 @@ export default function CoverPhotoContainer({
       const data = await profileService.uploadAvatarImg(formData);
       if (data.success) {
         setResponseMessage({ message: data.message, type: "success" });
-        closeModal();
+        onChangePhoto();
       }
     } catch (error) {
       if (error instanceof ApiError) {

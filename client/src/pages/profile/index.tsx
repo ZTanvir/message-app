@@ -36,6 +36,10 @@ export default function ProfilePage() {
   const handleOpenCoverPhotoDialog = () => {
     coverPhotoDialog.current?.openModal();
   };
+  const handleOnChangeCoverPhoto = () => {
+    coverPhotoDialog.current?.closeModal();
+    refetch();
+  };
 
   return (
     <div className="flex flex-1 flex-col">
@@ -122,7 +126,7 @@ export default function ProfilePage() {
       </main>
       <Modal title="Edit cover photo." ref={coverPhotoDialog}>
         <CoverPhotoEditContainer
-          closeModal={() => coverPhotoDialog.current?.closeModal()}
+          onChangePhoto={handleOnChangeCoverPhoto}
           imageUrl={coverImgUrl || null}
         />
       </Modal>
