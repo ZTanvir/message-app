@@ -51,7 +51,7 @@ export default function ProfilePage() {
     profilePhotoDialog.current?.openModal();
   };
   const handleOnChangeProfilePhotoDialog = () => {
-    coverPhotoDialog.current?.closeModal();
+    profilePhotoDialog.current?.closeModal();
     refetch();
   };
 
