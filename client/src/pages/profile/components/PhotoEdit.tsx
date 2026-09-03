@@ -4,10 +4,12 @@ import profileService from "../../../services/profileService";
 import { ApiError } from "../../../services/apiError";
 import Spinner from "../../../components/Spinner";
 import { cn } from "../../../utils/schemas/cn";
+import type { ApiEndPath } from "../../../types/api";
 
-type CoverPhotoModalProps = {
+type PhotoModalProps = {
   onChangePhoto: () => void;
   imageUrl: string | null;
+  apiEndPath: ApiEndPath;
 };
 
 type ServerResponseMessage = {
@@ -15,10 +17,11 @@ type ServerResponseMessage = {
   type: "success" | "failed";
 };
 
-export default function CoverPhotoEditContainer({
+export default function PhotoEditContainer({
   imageUrl,
   onChangePhoto,
-}: CoverPhotoModalProps) {
+  apiEndPath,
+}: PhotoModalProps) {
   const [imgSrc, setImgSrc] = useState<null | string>(imageUrl);
   const fileInputEl = useRef<HTMLInputElement>(null);
   const [responseMessage, setResponseMessage] =
@@ -48,7 +51,7 @@ export default function CoverPhotoEditContainer({
     try {
       setResponseMessage(null);
       setIsLoading(true);
-      const data = await profileService.uploadAvatarImg(formData);
+      const data = await profileService.uploadAvatarImg(formData, apiEndPath);
       if (data.success) {
         setResponseMessage({ message: data.message, type: "success" });
         onChangePhoto();

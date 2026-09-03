@@ -3,6 +3,8 @@ export type ApiErrorResponse = {
   message: string;
   stack?: string;
 };
+export type ApiEndPath = "uploadCover" | "uploadProfile";
+
 export type Profile = {
   id: string;
   username?: string | null;

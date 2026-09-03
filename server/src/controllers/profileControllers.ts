@@ -53,7 +53,6 @@ export function uploadCoverImg(
       if (error) {
         return next(new AppError(error.message, error.status || 400));
       }
-      console.log(data);
       const updatedProfile = await prisma.profile.update({
         where: {
           userId: user.id,

@@ -1,7 +1,7 @@
 import { apiUrl } from "./config";
 import type { ApiErrorResponse } from "../types/api";
 import { ApiError } from "./apiError";
-import type { Profile } from "../types/api";
+import type { Profile, ApiEndPath } from "../types/api";
 
 type UserProfile = {
   user: Profile;
@@ -22,8 +22,8 @@ async function getProfile(id: string): Promise<UserProfile> {
   return res.json();
 }
 
-async function uploadAvatarImg(formData: FormData) {
-  const res = await fetch(`${apiUrl}/api/profile/uploadCover`, {
+async function uploadAvatarImg(formData: FormData, apiEndPath: ApiEndPath) {
+  const res = await fetch(`${apiUrl}/api/profile/${apiEndPath}`, {
     method: "POST",
     body: formData,
     credentials: "include",

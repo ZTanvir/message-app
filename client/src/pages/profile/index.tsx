@@ -10,8 +10,8 @@ import { useRef } from "react";
 import type { DialogHandle } from "../../types/types";
 import viteEnv from "../../../env";
 import { cn } from "../../utils/schemas/cn";
-import CoverPhotoEditContainer from "./components/CoverPhotoEdit";
 import Modal from "../../components/Modal";
+import PhotoEditContainer from "./components/PhotoEdit";
 
 export default function ProfilePage() {
   const { userId } = useParams();
@@ -22,6 +22,7 @@ export default function ProfilePage() {
     retry: 1,
   });
   const coverPhotoDialog = useRef<DialogHandle>(null);
+  const profilePhotoDialog = useRef<DialogHandle>(null);
 
   if (isPending) {
     return <Spinner classname="w-15 h-15 border-4 fixed inset-0 m-auto" />;
@@ -31,12 +32,25 @@ export default function ProfilePage() {
   }
 
   const fullName = data.user.firstName + " " + data.user.lastName;
-  const coverImgUrl = `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/${data.user.coverImgUrl}`;
+  const coverImgUrl =
+    data.user.coverImgUrl &&
+    `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/${data.user.coverImgUrl}`;
+  const profileImgUrl =
+    data.user.profileImgUrl &&
+    `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/${data.user.profileImgUrl}`;
 
   const handleOpenCoverPhotoDialog = () => {
     coverPhotoDialog.current?.openModal();
   };
   const handleOnChangeCoverPhoto = () => {
+    coverPhotoDialog.current?.closeModal();
+    refetch();
+  };
+
+  const handleOpenProfilePhotoDialog = () => {
+    profilePhotoDialog.current?.openModal();
+  };
+  const handleOnChangeProfilePhotoDialog = () => {
     coverPhotoDialog.current?.closeModal();
     refetch();
   };
@@ -98,7 +112,10 @@ export default function ProfilePage() {
               <div className="rounded-full bg-white p-1">
                 <ProfileImg className="h-40 w-40" />
               </div>
-              <button className="absolute right-0 bottom-0 cursor-pointer rounded-full bg-gray-200 p-2 transition-colors duration-300 hover:bg-gray-300/80">
+              <button
+                onClick={handleOpenProfilePhotoDialog}
+                className="absolute right-0 bottom-0 cursor-pointer rounded-full bg-gray-200 p-2 transition-colors duration-300 hover:bg-gray-300/80"
+              >
                 <CameraIcon className="h-8 w-8" />
               </button>
             </div>
@@ -127,9 +144,17 @@ export default function ProfilePage() {
         </div>
       </main>
       <Modal title="Edit cover photo." ref={coverPhotoDialog}>
-        <CoverPhotoEditContainer
+        <PhotoEditContainer
           onChangePhoto={handleOnChangeCoverPhoto}
           imageUrl={coverImgUrl || null}
+          apiEndPath="uploadCover"
+        />
+      </Modal>
+      <Modal title="Edit profile photo." ref={profilePhotoDialog}>
+        <PhotoEditContainer
+          onChangePhoto={handleOnChangeProfilePhotoDialog}
+          imageUrl={profileImgUrl || null}
+          apiEndPath="uploadProfile"
         />
       </Modal>
     </div>
