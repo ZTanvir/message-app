@@ -10,6 +10,7 @@ type PhotoModalProps = {
   onChangePhoto: () => void;
   imageUrl: string | null;
   apiEndPath: ApiEndPath;
+  fileName: string;
 };
 
 type ServerResponseMessage = {
@@ -21,6 +22,7 @@ export default function PhotoEditContainer({
   imageUrl,
   onChangePhoto,
   apiEndPath,
+  fileName,
 }: PhotoModalProps) {
   const [imgSrc, setImgSrc] = useState<null | string>(imageUrl);
   const fileInputEl = useRef<HTMLInputElement>(null);
@@ -47,7 +49,7 @@ export default function PhotoEditContainer({
     if (!fileInputEl.current) return;
     const file = fileInputEl.current.files?.[0] || "";
     const formData = new FormData();
-    formData.append("cover", file);
+    formData.append(`${fileName}`, file);
     try {
       setResponseMessage(null);
       setIsLoading(true);
@@ -110,7 +112,7 @@ export default function PhotoEditContainer({
           >
             <label
               className="flex justify-center gap-2 px-5 py-2 opacity-80 hover:cursor-pointer hover:opacity-100"
-              htmlFor="cover"
+              htmlFor="demoImg"
             >
               <span>
                 <PlusIcon className="h-5 w-5 text-orange-600" />
@@ -124,8 +126,8 @@ export default function PhotoEditContainer({
             accept="image/*"
             className="hidden"
             type="file"
-            id="cover"
-            name="cover"
+            id="demoImg"
+            name={fileName}
           />
         </div>
 

@@ -32,12 +32,12 @@ export default function ProfilePage() {
   }
 
   const fullName = data.user.firstName + " " + data.user.lastName;
-  const coverImgUrl =
-    data.user.coverImgUrl &&
-    `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/${data.user.coverImgUrl}`;
-  const profileImgUrl =
-    data.user.profileImgUrl &&
-    `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/${data.user.profileImgUrl}`;
+  const coverImgUrl = data.user.coverImgUrl
+    ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/${data.user.coverImgUrl}`
+    : null;
+  const profileImgUrl = data.user.profileImgUrl
+    ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/${data.user.profileImgUrl}`
+    : null;
 
   const handleOpenCoverPhotoDialog = () => {
     coverPhotoDialog.current?.openModal();
@@ -108,9 +108,10 @@ export default function ProfilePage() {
                 </p>
               </div>
             </section>
+            {/* profile image */}
             <div className="absolute top-1/2 left-1/2 -translate-1/2 md:left-25 md:-translate-y-1/2">
-              <div className="rounded-full bg-white p-1">
-                <ProfileImg className="h-40 w-40" />
+              <div className="overflow-hidden rounded-full bg-white p-1">
+                <ProfileImg imageUrl={profileImgUrl} className="rounded-full" />
               </div>
               <button
                 onClick={handleOpenProfilePhotoDialog}
@@ -147,14 +148,16 @@ export default function ProfilePage() {
         <PhotoEditContainer
           onChangePhoto={handleOnChangeCoverPhoto}
           imageUrl={coverImgUrl || null}
-          apiEndPath="uploadCover"
+          apiEndPath="uploadCoverImg"
+          fileName="coverImg"
         />
       </Modal>
       <Modal title="Edit profile photo." ref={profilePhotoDialog}>
         <PhotoEditContainer
           onChangePhoto={handleOnChangeProfilePhotoDialog}
           imageUrl={profileImgUrl || null}
-          apiEndPath="uploadProfile"
+          apiEndPath="uploadProfileImg"
+          fileName="profileImg"
         />
       </Modal>
     </div>

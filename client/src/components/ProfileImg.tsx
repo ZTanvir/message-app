@@ -1,7 +1,7 @@
 import avatarImg from "../assets/images/avatar.svg";
 import { cn } from "../utils/schemas/cn";
 type ProfileImgProps = {
-  imageUrl?: string;
+  imageUrl: string | null;
   className?: string;
 };
 export default function ProfileImg({ imageUrl, className }: ProfileImgProps) {

@@ -5,12 +5,19 @@ import multer from "multer";
 import supabase from "../lib/supabase.ts";
 import type { UserTokenData } from "../types/user.ts";
 const storage = multer.memoryStorage();
-const upload = multer({
+const uploadCoverImgFile = multer({
   storage,
   limits: {
-    fileSize: 2 * 1024 * 1024,
+    fileSize: 2 * 1024 * 1024, // 1MB
   },
-}).single("cover");
+}).single("coverImg");
+
+const uploadProfileImgFile = multer({
+  storage,
+  limits: {
+    fileSize: 1024 * 1024, // 1MB
+  },
+}).single("profileImg");
 
 export async function getProfile(req: Request, res: Response) {
   const { userId } = req.params;
@@ -30,9 +37,15 @@ export function uploadCoverImg(
   res: Response,
   next: NextFunction,
 ) {
-  upload(req, res, async function (err) {
+  uploadCoverImgFile(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
-      return next(new AppError(`${err.message}.Maximum size 2MB.`, 400));
+      switch (err.code) {
+        case "LIMIT_FILE_SIZE": {
+          return next(new AppError(`${err.message}.Maximum size 2MB.`, 400));
+        }
+        default:
+          return next(new AppError(`${err.message}`, 400));
+      }
     } else if (err) {
       return next(err);
     }
@@ -64,6 +77,57 @@ export function uploadCoverImg(
       return res
         .status(200)
         .json({ success: true, message: "Cover image added successfully." });
+    } catch (error) {
+      next(error);
+    }
+  });
+}
+
+export function uploadProfileImg(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  uploadProfileImgFile(req, res, async function (err) {
+    if (err instanceof multer.MulterError) {
+      switch (err.code) {
+        case "LIMIT_FILE_SIZE": {
+          return next(new AppError(`${err.message}.Maximum size 1MB.`, 400));
+        }
+        default:
+          return next(new AppError(`${err.message}`, 400));
+      }
+    } else if (err) {
+      return next(err);
+    }
+
+    try {
+      const file = req.file;
+      const user = req.user as UserTokenData;
+      if (!file) return next(new AppError("File not uploaded.", 404));
+
+      if (!user) return next(new AppError("User not authorized.", 401));
+
+      const { data, error } = await supabase.storage
+        .from("message_app")
+        .upload(`${user.email}/profile/${file.originalname}`, file.buffer, {
+          contentType: file.mimetype,
+        });
+
+      if (error) {
+        return next(new AppError(error.message, error.status || 400));
+      }
+      const updatedProfile = await prisma.profile.update({
+        where: {
+          userId: user.id,
+        },
+        data: {
+          profileImgUrl: data.fullPath,
+        },
+      });
+      return res
+        .status(200)
+        .json({ success: true, message: "Profile image added successfully." });
     } catch (error) {
       next(error);
     }
