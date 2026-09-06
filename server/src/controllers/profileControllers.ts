@@ -31,7 +31,6 @@ export async function getProfile(req: Request, res: Response) {
   if (!user) throw new AppError("Profile not found", 404);
   return res.status(200).json({ user, success: true });
 }
-
 export function uploadCoverImg(
   req: Request,
   res: Response,
@@ -51,18 +50,50 @@ export function uploadCoverImg(
     }
 
     try {
-      const file = req.file;
       const user = req.user as UserTokenData;
-      if (!file) return next(new AppError("File not uploaded.", 404));
-
       if (!user) return next(new AppError("User not authorized.", 401));
+
+      const file = req.file;
+      // User don't want any cover photo
+      if (!file) {
+        const userProfile = await prisma.profile.findUnique({
+          where: {
+            userId: user.id,
+          },
+        });
+        if (userProfile?.coverImgUrl) {
+          const { data, error } = await supabase.storage
+            .from("message_app")
+            .remove([`${userProfile?.coverImgUrl}`]);
+          if (error) {
+            return next(new AppError("No cover photo added,yet.", 404));
+          }
+          await prisma.profile.update({
+            where: {
+              userId: user.id,
+            },
+            data: {
+              coverImgUrl: null,
+            },
+          });
+          return res.status(200).json({
+            success: true,
+            message: "Cover image removed successfully.",
+          });
+        } else {
+          return next(new AppError("No cover photo added,yet.", 404));
+        }
+      }
 
       const { data, error } = await supabase.storage
         .from("message_app")
-        .upload(`${user.email}/profile/${file.originalname}`, file.buffer, {
-          contentType: file.mimetype,
-        });
-
+        .upload(
+          `${user.id}/assets/photos/cover/${file.originalname}`,
+          file.buffer,
+          {
+            contentType: file.mimetype,
+          },
+        );
       if (error) {
         return next(new AppError(error.message, error.status || 400));
       }
@@ -102,17 +133,49 @@ export function uploadProfileImg(
     }
 
     try {
-      const file = req.file;
       const user = req.user as UserTokenData;
-      if (!file) return next(new AppError("File not uploaded.", 404));
-
       if (!user) return next(new AppError("User not authorized.", 401));
+
+      const file = req.file;
+      if (!file) {
+        const userProfile = await prisma.profile.findUnique({
+          where: {
+            userId: user.id,
+          },
+        });
+        if (userProfile?.profileImgUrl) {
+          const { data, error } = await supabase.storage
+            .from("message_app")
+            .remove([`${userProfile?.profileImgUrl}`]);
+          if (error) {
+            return next(new AppError("No profile photo added,yet.", 404));
+          }
+          await prisma.profile.update({
+            where: {
+              userId: user.id,
+            },
+            data: {
+              profileImgUrl: null,
+            },
+          });
+          return res.status(200).json({
+            success: true,
+            message: "Profile image removed successfully.",
+          });
+        } else {
+          return next(new AppError("No profile photo added,yet.", 404));
+        }
+      }
 
       const { data, error } = await supabase.storage
         .from("message_app")
-        .upload(`${user.email}/profile/${file.originalname}`, file.buffer, {
-          contentType: file.mimetype,
-        });
+        .upload(
+          `${user.id}/assets/photos/profile/${file.originalname}`,
+          file.buffer,
+          {
+            contentType: file.mimetype,
+          },
+        );
 
       if (error) {
         return next(new AppError(error.message, error.status || 400));

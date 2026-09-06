@@ -10,6 +10,7 @@ const profileRoute = Router();
 // broken window - fix the auth case with proper response
 profileRoute.use(passport.authenticate("jwt", { session: false }));
 
+// broken window - fix unused cover,profile photo
 profileRoute.post("/uploadCoverImg", uploadCoverImg);
 profileRoute.post("/uploadProfileImg", uploadProfileImg);
 
