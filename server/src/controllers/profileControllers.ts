@@ -55,12 +55,12 @@ export function uploadCoverImg(
 
       const file = req.file;
       // User don't want any cover photo
+      const userProfile = await prisma.profile.findUnique({
+        where: {
+          userId: user.id,
+        },
+      });
       if (!file) {
-        const userProfile = await prisma.profile.findUnique({
-          where: {
-            userId: user.id,
-          },
-        });
         if (userProfile?.coverImgUrl) {
           const { data, error } = await supabase.storage
             .from("message_app")
@@ -102,9 +102,20 @@ export function uploadCoverImg(
           userId: user.id,
         },
         data: {
-          coverImgUrl: data.fullPath,
+          coverImgUrl: data.path,
         },
       });
+      // delete the old file
+      const { error: oldFileError } = await supabase.storage
+        .from("message_app")
+        .remove([`${userProfile?.coverImgUrl}`]);
+
+      if (oldFileError) {
+        return next(
+          new AppError(oldFileError.message, oldFileError.status || 400),
+        );
+      }
+
       return res
         .status(200)
         .json({ success: true, message: "Cover image added successfully." });
@@ -137,12 +148,12 @@ export function uploadProfileImg(
       if (!user) return next(new AppError("User not authorized.", 401));
 
       const file = req.file;
+      const userProfile = await prisma.profile.findUnique({
+        where: {
+          userId: user.id,
+        },
+      });
       if (!file) {
-        const userProfile = await prisma.profile.findUnique({
-          where: {
-            userId: user.id,
-          },
-        });
         if (userProfile?.profileImgUrl) {
           const { data, error } = await supabase.storage
             .from("message_app")
@@ -185,9 +196,18 @@ export function uploadProfileImg(
           userId: user.id,
         },
         data: {
-          profileImgUrl: data.fullPath,
+          profileImgUrl: data.path,
         },
       });
+      const { error: oldFileError } = await supabase.storage
+        .from("message_app")
+        .remove([`${userProfile?.profileImgUrl}`]);
+
+      if (oldFileError) {
+        return next(
+          new AppError(oldFileError.message, oldFileError.status || 400),
+        );
+      }
       return res
         .status(200)
         .json({ success: true, message: "Profile image added successfully." });

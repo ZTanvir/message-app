@@ -33,10 +33,10 @@ export default function ProfilePage() {
 
   const fullName = data.user.firstName + " " + data.user.lastName;
   const coverImgUrl = data.user.coverImgUrl
-    ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/${data.user.coverImgUrl}`
+    ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/message_app/${data.user.coverImgUrl}`
     : null;
   const profileImgUrl = data.user.profileImgUrl
-    ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/${data.user.profileImgUrl}`
+    ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/message_app/${data.user.profileImgUrl}`
     : null;
 
   const handleOpenCoverPhotoDialog = () => {
@@ -44,7 +44,9 @@ export default function ProfilePage() {
   };
   const handleOnChangeCoverPhoto = () => {
     coverPhotoDialog.current?.closeModal();
-    refetch();
+    setTimeout(() => {
+      refetch();
+    }, 1000);
   };
 
   const handleOpenProfilePhotoDialog = () => {
@@ -52,7 +54,9 @@ export default function ProfilePage() {
   };
   const handleOnChangeProfilePhotoDialog = () => {
     profilePhotoDialog.current?.closeModal();
-    refetch();
+    setTimeout(() => {
+      refetch();
+    }, 1000);
   };
 
   return (
