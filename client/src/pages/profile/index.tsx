@@ -12,6 +12,7 @@ import viteEnv from "../../../env";
 import { cn } from "../../utils/schemas/cn";
 import Modal from "../../components/Modal";
 import PhotoEditContainer from "./components/PhotoEdit";
+import Profession from "./components/Profession";
 
 export default function ProfilePage() {
   const { userId } = useParams();
@@ -31,7 +32,6 @@ export default function ProfilePage() {
     return <ErrorMessage message={error.message} refetch={refetch} />;
   }
 
-  const fullName = data.user.firstName + " " + data.user.lastName;
   const coverImgUrl = data.user.coverImgUrl
     ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/message_app/${data.user.coverImgUrl}`
     : null;
@@ -93,25 +93,7 @@ export default function ProfilePage() {
                 <span>Edit cover image</span>
               </button>
             </div>
-            <section className="flex-1 md:pl-50 lg:pl-54">
-              <div className="mt-20 p-4 text-center md:mt-0 md:text-left">
-                <h2 className="text-4xl font-bold">{fullName}</h2>
-                {data.user.profession ? (
-                  <p>{data.user.profession}</p>
-                ) : (
-                  <p className="opacity-80">Profession not added yet.</p>
-                )}
-                {data.user.profession ? (
-                  <p>{data.user.location}</p>
-                ) : (
-                  <p className="opacity-80">Location not added yet.</p>
-                )}
-
-                <p>
-                  Main skills <span>Ux design</span>
-                </p>
-              </div>
-            </section>
+            <Profession profile={data?.user} />
             {/* profile image */}
             <div className="absolute top-1/2 left-1/2 -translate-1/2 md:left-25 md:-translate-y-1/2">
               <div className="overflow-hidden rounded-full bg-white p-1">
