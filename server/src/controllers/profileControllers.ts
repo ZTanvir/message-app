@@ -4,6 +4,7 @@ import AppError from "../utils/appError.ts";
 import multer from "multer";
 import supabase from "../lib/supabase.ts";
 import type { UserTokenData } from "../types/user.ts";
+import { Prisma } from "../../prisma/generated/prisma/client.ts";
 const storage = multer.memoryStorage();
 const uploadCoverImgFile = multer({
   storage,
@@ -215,4 +216,37 @@ export function uploadProfileImg(
       next(error);
     }
   });
+}
+
+export async function editProfile(req: Request, res: Response) {
+  const { firstName, lastName, profession, location } = req.body;
+  const user = req.user as UserTokenData;
+  if (!user) throw new AppError("User not authorized.", 401);
+
+  try {
+    await prisma.profile.update({
+      where: {
+        userId: user.id,
+      },
+      data: {
+        firstName,
+        lastName,
+        profession,
+        location,
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully.",
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2025": {
+          throw new AppError("User record not found.", 404);
+        }
+      }
+    }
+    throw new AppError("Unknown edit profile error", 500);
+  }
 }

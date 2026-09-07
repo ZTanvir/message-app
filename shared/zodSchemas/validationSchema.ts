@@ -28,3 +28,10 @@ export const SignUpValidationSchema = z.object({
     .max(255, "Password must be with in 255 characters")
     .regex(/\d/, "Password must contain at least one number"),
 });
+
+export const EditProfileSchema = z.object({
+  firstName: z.string().min(1).optional(),
+  lastName: z.string().min(1).optional(),
+  profession: z.string().min(1).optional(),
+  location: z.string().min(1).optional(),
+});

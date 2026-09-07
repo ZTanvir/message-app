@@ -1,6 +1,8 @@
 import { useState } from "react";
 import type { Profile } from "../../../types/api";
 import { PencilIcon } from "@heroicons/react/24/outline";
+import { EditProfileSchema } from "@message-app/shared/zodSchemas/validationSchema";
+import * as z from "zod";
 
 type ProfessionProps = {
   profile: Profile;
@@ -23,6 +25,21 @@ function EditProfessionForm({
 
   const handleFormSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    // Db will have null value instead of empty string
+    const profileFormValues: Record<string, string> = {};
+    for (const [key, value] of Object.entries(profileFormData)) {
+      if (value) {
+        profileFormValues[key] = value;
+      }
+    }
+
+    const result = EditProfileSchema.safeParse(profileFormValues);
+    if (!result.success) {
+      console.log(z.flattenError(result.error));
+    }
+
+    console.log(result.data);
   };
 
   return (
@@ -62,7 +79,7 @@ function EditProfessionForm({
         />
       </div>
       <div className="space-x-2">
-        <label htmlFor="lastName">Profession:</label>
+        <label htmlFor="profession">Profession:</label>
         <input
           type="text"
           id="profession"
@@ -77,7 +94,7 @@ function EditProfessionForm({
         />
       </div>
       <div className="space-x-2">
-        <label htmlFor="lastName">Location:</label>
+        <label htmlFor="location">Location:</label>
         <input
           type="text"
           id="location"
@@ -101,7 +118,6 @@ function EditProfessionForm({
         </button>
         <button
           className="rounded-lg bg-blue-700 px-5 py-2 text-white transition-colors duration-300 hover:cursor-pointer hover:bg-blue-700/80"
-          onClick={handleCloseForm}
           type="submit"
         >
           Edit
