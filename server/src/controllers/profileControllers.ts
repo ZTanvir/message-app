@@ -219,21 +219,23 @@ export function uploadProfileImg(
 }
 
 export async function editProfile(req: Request, res: Response) {
-  const { firstName, lastName, profession, location } = req.body;
   const user = req.user as UserTokenData;
   if (!user) throw new AppError("User not authorized.", 401);
+
+  //  write data to db that are not undefined
+  const profileData: Record<string, string> = {};
+  for (const [key, value] of Object.entries(req.body)) {
+    if (key && value !== undefined && value !== null) {
+      profileData[key] = String(value);
+    }
+  }
 
   try {
     await prisma.profile.update({
       where: {
         userId: user.id,
       },
-      data: {
-        firstName,
-        lastName,
-        profession,
-        location,
-      },
+      data: profileData,
     });
     return res.status(200).json({
       success: true,

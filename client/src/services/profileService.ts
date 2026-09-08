@@ -2,6 +2,8 @@ import { apiUrl } from "./config";
 import type { ApiErrorResponse } from "../types/api";
 import { ApiError } from "./apiError";
 import type { Profile, ApiEndPath } from "../types/api";
+import { EditProfileSchema } from "@message-app/shared/zodSchemas/validationSchema";
+import * as z from "zod";
 
 type UserProfile = {
   user: Profile;
@@ -39,7 +41,28 @@ async function uploadAvatarImg(formData: FormData, apiEndPath: ApiEndPath) {
   return result;
 }
 
+async function editProfile(profileData: z.infer<typeof EditProfileSchema>) {
+  const res = await fetch(`${apiUrl}/api/profile/editProfile`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(profileData),
+  });
+  if (!res.ok) {
+    const errorData: ApiError = await res.json().catch((error) => ({
+      message: error.message,
+      success: false,
+    }));
+    throw new ApiError(errorData.message, res.status);
+  }
+  const data = await res.json();
+  return data;
+}
+
 export default {
   getProfile,
   uploadAvatarImg,
+  editProfile,
 };

@@ -2,7 +2,11 @@ import { useState } from "react";
 import type { Profile } from "../../../types/api";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import { EditProfileSchema } from "@message-app/shared/zodSchemas/validationSchema";
-import * as z from "zod";
+import profileService from "../../../services/profileService";
+import { useParams } from "react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type z from "zod";
+import Spinner from "../../../components/Spinner";
 
 type ProfessionProps = {
   profile: Profile;
@@ -23,7 +27,24 @@ function EditProfessionForm({
     location: profile.location || "",
   });
 
-  const handleFormSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+  const { userId } = useParams();
+  const queryClient = useQueryClient();
+
+  const profileMutation = useMutation({
+    mutationFn: (newProfile: z.infer<typeof EditProfileSchema>) => {
+      return profileService.editProfile(newProfile);
+    },
+    onSuccess: () => {
+      handleCloseForm();
+      queryClient.invalidateQueries({
+        queryKey: ["profile", userId],
+      });
+    },
+  });
+
+  const handleFormSubmit = async (
+    event: React.SubmitEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
 
     // Db will have null value instead of empty string
@@ -35,11 +56,9 @@ function EditProfessionForm({
     }
 
     const result = EditProfileSchema.safeParse(profileFormValues);
-    if (!result.success) {
-      console.log(z.flattenError(result.error));
+    if (result.success) {
+      profileMutation.mutate(result.data);
     }
-
-    console.log(result.data);
   };
 
   return (
@@ -117,9 +136,10 @@ function EditProfessionForm({
           Cancel
         </button>
         <button
-          className="rounded-lg bg-blue-700 px-5 py-2 text-white transition-colors duration-300 hover:cursor-pointer hover:bg-blue-700/80"
+          className="inline-flex items-center gap-x-2 rounded-lg bg-blue-700 px-5 py-2 text-white transition-colors duration-300 hover:cursor-pointer hover:bg-blue-700/80"
           type="submit"
         >
+          {profileMutation.isPending && <Spinner />}
           Edit
         </button>
       </div>
