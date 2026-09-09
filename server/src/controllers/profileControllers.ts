@@ -28,6 +28,10 @@ export async function getProfile(req: Request, res: Response) {
 
   const user = await prisma.profile.findUnique({
     where: { userId: normalizeUserId },
+    omit: {
+      created_at: true,
+      updated_at: true,
+    },
   });
   if (!user) throw new AppError("Profile not found", 404);
   return res.status(200).json({ user, success: true });
@@ -219,23 +223,23 @@ export function uploadProfileImg(
 }
 
 export async function editProfile(req: Request, res: Response) {
+  const { firstName, lastName, profession, location } = req.body;
   const user = req.user as UserTokenData;
   if (!user) throw new AppError("User not authorized.", 401);
 
-  //  write data to db that are not undefined
-  const profileData: Record<string, string> = {};
-  for (const [key, value] of Object.entries(req.body)) {
-    if (key && value !== undefined && value !== null) {
-      profileData[key] = String(value);
-    }
-  }
+  console.log(firstName, lastName, profession, location);
 
   try {
     await prisma.profile.update({
       where: {
         userId: user.id,
       },
-      data: profileData,
+      data: {
+        firstName: firstName === undefined ? null : firstName,
+        lastName: lastName === undefined ? null : lastName,
+        profession: profession === undefined ? null : profession,
+        location: location === undefined ? null : location,
+      },
     });
     return res.status(200).json({
       success: true,

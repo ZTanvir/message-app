@@ -51,11 +51,19 @@ async function editProfile(profileData: z.infer<typeof EditProfileSchema>) {
     body: JSON.stringify(profileData),
   });
   if (!res.ok) {
-    const errorData: ApiError = await res.json().catch((error) => ({
-      message: error.message,
-      success: false,
-    }));
-    throw new ApiError(errorData.message, res.status);
+    if (res.status === 400) {
+      const errorData: ApiError = await res.json().catch((error) => ({
+        message: error.error,
+        success: false,
+      }));
+      throw new ApiError(errorData.message, res.status);
+    } else if (res.status === 404) {
+      const errorData: ApiError = await res.json().catch((error) => ({
+        message: error.message,
+        success: false,
+      }));
+      throw new ApiError(errorData.message, res.status);
+    }
   }
   const data = await res.json();
   return data;

@@ -30,7 +30,7 @@ export const SignUpValidationSchema = z.object({
 });
 
 export const EditProfileSchema = z.object({
-  firstName: z.string().min(1).optional(),
+  firstName: z.string("First name is required.").min(1),
   lastName: z.string().min(1).optional(),
   profession: z.string().min(1).optional(),
   location: z.string().min(1).optional(),

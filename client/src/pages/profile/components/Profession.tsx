@@ -5,7 +5,7 @@ import { EditProfileSchema } from "@message-app/shared/zodSchemas/validationSche
 import profileService from "../../../services/profileService";
 import { useParams } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type z from "zod";
+import z from "zod";
 import Spinner from "../../../components/Spinner";
 
 type ProfessionProps = {
@@ -15,6 +15,7 @@ type EditProfessionFormProps = {
   profile: Profile;
   handleCloseForm: () => void;
 };
+type ProfileFormErrors = Record<string, string[]>;
 
 function EditProfessionForm({
   profile,
@@ -26,6 +27,9 @@ function EditProfessionForm({
     profession: profile.profession || "",
     location: profile.location || "",
   });
+  const [profileFormErrors, setProfileFormErrors] =
+    useState<ProfileFormErrors | null>(null);
+  const [serverErrorMsg, setServerErrorMsg] = useState<string | null>(null);
 
   const { userId } = useParams();
   const queryClient = useQueryClient();
@@ -39,6 +43,9 @@ function EditProfessionForm({
       queryClient.invalidateQueries({
         queryKey: ["profile", userId],
       });
+    },
+    onError: (error) => {
+      setServerErrorMsg(error.message);
     },
   });
 
@@ -57,7 +64,12 @@ function EditProfessionForm({
 
     const result = EditProfileSchema.safeParse(profileFormValues);
     if (result.success) {
+      setProfileFormErrors(null);
+      setServerErrorMsg(null);
       profileMutation.mutate(result.data);
+    } else {
+      const formatError = z.flattenError(result.error);
+      setProfileFormErrors(formatError.fieldErrors);
     }
   };
 
@@ -67,6 +79,7 @@ function EditProfessionForm({
       className="flex flex-col gap-y-4"
       id="editProfile"
     >
+      {serverErrorMsg && <p className="py-2 text-red-500">{serverErrorMsg}</p>}
       <div className="space-x-2">
         <label htmlFor="firstName">First name:</label>
         <input
@@ -81,6 +94,9 @@ function EditProfessionForm({
             }))
           }
         />
+        {profileFormErrors && (
+          <p className="text-red-500">{profileFormErrors["firstName"]}</p>
+        )}
       </div>
       <div className="space-x-2">
         <label htmlFor="lastName">Last name:</label>
@@ -150,7 +166,11 @@ function EditProfessionForm({
 export default function Profession({ profile }: ProfessionProps) {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
-  const fullName = profile.firstName + " " + profile.lastName;
+  const fullName =
+    (profile.firstName ? profile.firstName : "") +
+    " " +
+    (profile.lastName ? profile.lastName : "");
+
   return (
     <section className="flex flex-1 items-start justify-between p-4 md:pl-50 lg:pl-54">
       {isEditingProfile ? (
@@ -160,14 +180,14 @@ export default function Profession({ profile }: ProfessionProps) {
         />
       ) : (
         <div className="mt-20 p-4 text-center md:mt-0 md:text-left">
-          <h2 className="text-4xl font-bold">{fullName}</h2>
+          <h2 className="text-4xl">{fullName}</h2>
           {profile.profession ? (
-            <p>{profile.profession}</p>
+            <p className="opacity-80">{profile.profession}</p>
           ) : (
             <p className="opacity-80">Profession not added yet.</p>
           )}
-          {profile.profession ? (
-            <p>{profile.location}</p>
+          {profile.location ? (
+            <p className="opacity-80">{profile.location}</p>
           ) : (
             <p className="opacity-80">Location not added yet.</p>
           )}
