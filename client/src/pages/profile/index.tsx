@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
 import Card from "./components/Card";
-import { PencilIcon, CameraIcon } from "@heroicons/react/24/outline";
+import { CameraIcon } from "@heroicons/react/24/outline";
 import ProfileImg from "../../components/ProfileImg";
 import { useQuery } from "@tanstack/react-query";
 import profileService from "../../services/profileService";
@@ -13,6 +13,7 @@ import { cn } from "../../utils/schemas/cn";
 import Modal from "../../components/Modal";
 import PhotoEditContainer from "./components/PhotoEdit";
 import Profession from "./components/Profession";
+import AboutMe from "./components/AboutMe";
 
 export default function ProfilePage() {
   const { userId } = useParams();
@@ -69,6 +70,7 @@ export default function ProfilePage() {
         {/* profile and about me */}
         <div className="space-y-4">
           {/* profile */}
+          {/* profile cover image */}
           <Card className="relative flex h-150 flex-col overflow-hidden p-0">
             <div
               style={
@@ -93,6 +95,7 @@ export default function ProfilePage() {
                 <span>Edit cover image</span>
               </button>
             </div>
+            {/* Profession */}
             <Profession profile={data?.user} />
             {/* profile image */}
             <div className="absolute top-1/2 left-1/2 -translate-1/2 md:left-25 md:-translate-y-1/2">
@@ -109,17 +112,7 @@ export default function ProfilePage() {
           </Card>
           {/* about me */}
           <Card className="flex flex-col justify-between">
-            <div className="flex justify-between">
-              <h2 className="text-xl">About me</h2>
-              <button className="cursor-pointer">
-                <PencilIcon className="h-6 w-6 cursor-pointer" />
-              </button>
-            </div>
-            {data.user.profession ? (
-              <p>{data.user.about}</p>
-            ) : (
-              <p className="opacity-80">About me not added yet.</p>
-            )}
+            <AboutMe about={data.user.about} />
           </Card>
         </div>
         {/* similar profile */}

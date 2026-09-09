@@ -154,6 +154,7 @@ function EditProfessionForm({
         <button
           className="inline-flex items-center gap-x-2 rounded-lg bg-blue-700 px-5 py-2 text-white transition-colors duration-300 hover:cursor-pointer hover:bg-blue-700/80"
           type="submit"
+          disabled={profileMutation.isPending}
         >
           {profileMutation.isPending && <Spinner />}
           Edit
