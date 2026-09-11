@@ -1,6 +1,9 @@
 import { PencilIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import Spinner from "../../../components/Spinner";
+import { EditAboutMeSchema } from "@message-app/shared/zodSchemas/validationSchema";
+import { useMutation } from "@tanstack/react-query";
+import profileService from "../../../services/profileService";
 
 type AboutMeProps = {
   about: string | null | undefined;
@@ -13,24 +16,37 @@ type AboutMeFormProps = {
 
 function AboutMeForm({ aboutData, handleCloseForm }: AboutMeFormProps) {
   const [about, setAbout] = useState(aboutData || "");
-  const handleFormSubmit = () => {};
+  const editAboutMeMutation = useMutation({
+    mutationFn: (newAboutMe: string) => {
+      return profileService.editAboutMe(newAboutMe);
+    },
+  });
+
+  const handleFormSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const aboutData = about ? { about } : {};
+    const result = EditAboutMeSchema.safeParse(aboutData);
+    if (result.success) {
+      editAboutMeMutation.mutate(result.data);
+    }
+  };
 
   return (
     <form
       onSubmit={handleFormSubmit}
       className="flex flex-col gap-y-4"
-      id="editProfile"
+      id="editAboutMe"
     >
       <div className="space-x-2">
         <textarea
-          name="text"
+          name="about"
           id="about"
           className="w-full rounded-lg border border-gray-400/40 p-2"
           value={about}
           onChange={(e) => setAbout(e.target.value)}
         />
       </div>
-      <div className="space-x-4">
+      <div className="flex gap-x-4">
         <button
           className="rounded-lg bg-gray-300/40 px-5 py-2 transition-colors duration-300 hover:cursor-pointer hover:bg-gray-300"
           onClick={handleCloseForm}
@@ -42,7 +58,7 @@ function AboutMeForm({ aboutData, handleCloseForm }: AboutMeFormProps) {
           className="inline-flex items-center gap-x-2 rounded-lg bg-blue-700 px-5 py-2 text-white transition-colors duration-300 hover:cursor-pointer hover:bg-blue-700/80"
           type="submit"
         >
-          {<Spinner />}
+          {<Spinner classname="border-white border-t-transparent" />}
           Edit
         </button>
       </div>

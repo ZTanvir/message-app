@@ -35,3 +35,7 @@ export const EditProfileSchema = z.object({
   profession: z.string().min(1).optional(),
   location: z.string().min(1).optional(),
 });
+
+export const EditAboutMeSchema = z.object({
+  about: z.string().min(1, "About me is too small.").optional(),
+});

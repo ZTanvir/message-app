@@ -69,8 +69,25 @@ async function editProfile(profileData: z.infer<typeof EditProfileSchema>) {
   return data;
 }
 
+async function editAboutMe(aboutMeData: string) {
+  const res = await fetch(`${apiUrl}/api/profile/aboutMe`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "PATCH",
+    body: JSON.stringify(aboutMeData),
+    credentials: "include",
+  });
+  if (!res.ok) {
+    return;
+  }
+  const data = await res.json();
+  return data;
+}
+
 export default {
   getProfile,
   uploadAvatarImg,
   editProfile,
+  editAboutMe,
 };
