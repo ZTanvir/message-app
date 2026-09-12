@@ -4,6 +4,7 @@ import Spinner from "../../../components/Spinner";
 import { EditAboutMeSchema } from "@message-app/shared/zodSchemas/validationSchema";
 import { useMutation } from "@tanstack/react-query";
 import profileService from "../../../services/profileService";
+import type { AboutFormData } from "../../../types/componentTypes";
 
 type AboutMeProps = {
   about: string | null | undefined;
@@ -17,14 +18,14 @@ type AboutMeFormProps = {
 function AboutMeForm({ aboutData, handleCloseForm }: AboutMeFormProps) {
   const [about, setAbout] = useState(aboutData || "");
   const editAboutMeMutation = useMutation({
-    mutationFn: (newAboutMe: string) => {
+    mutationFn: (newAboutMe: AboutFormData) => {
       return profileService.editAboutMe(newAboutMe);
     },
   });
 
   const handleFormSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const aboutData = about ? { about } : {};
+    const aboutData: AboutFormData = about ? { about } : {};
     const result = EditAboutMeSchema.safeParse(aboutData);
     if (result.success) {
       editAboutMeMutation.mutate(result.data);
@@ -58,7 +59,9 @@ function AboutMeForm({ aboutData, handleCloseForm }: AboutMeFormProps) {
           className="inline-flex items-center gap-x-2 rounded-lg bg-blue-700 px-5 py-2 text-white transition-colors duration-300 hover:cursor-pointer hover:bg-blue-700/80"
           type="submit"
         >
-          {<Spinner classname="border-white border-t-transparent" />}
+          {editAboutMeMutation.isPending && (
+            <Spinner classname="border-white border-t-transparent" />
+          )}
           Edit
         </button>
       </div>

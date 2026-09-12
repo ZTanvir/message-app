@@ -4,6 +4,7 @@ import { ApiError } from "./apiError";
 import type { Profile, ApiEndPath } from "../types/api";
 import { EditProfileSchema } from "@message-app/shared/zodSchemas/validationSchema";
 import * as z from "zod";
+import type { AboutFormData } from "../types/componentTypes";
 
 type UserProfile = {
   user: Profile;
@@ -69,7 +70,7 @@ async function editProfile(profileData: z.infer<typeof EditProfileSchema>) {
   return data;
 }
 
-async function editAboutMe(aboutMeData: string) {
+async function editAboutMe(aboutMeData: AboutFormData) {
   const res = await fetch(`${apiUrl}/api/profile/aboutMe`, {
     headers: {
       "Content-Type": "application/json",
