@@ -4,9 +4,13 @@ import {
   uploadCoverImg,
   uploadProfileImg,
   editProfile,
+  aboutMe,
 } from "../controllers/profileControllers.ts";
 import { validateBody } from "../middlewares/validation.ts";
-import { EditProfileSchema } from "@message-app/shared/zodSchemas/validationSchema.ts";
+import {
+  EditProfileSchema,
+  EditAboutMeSchema,
+} from "@message-app/shared/zodSchemas/validationSchema.ts";
 import passport from "passport";
 
 const profileRoute = Router();
@@ -21,5 +25,6 @@ profileRoute.patch(
   validateBody(EditProfileSchema),
   editProfile,
 );
+profileRoute.patch("/aboutMe", validateBody(EditAboutMeSchema), aboutMe);
 
 export default profileRoute;

@@ -227,8 +227,6 @@ export async function editProfile(req: Request, res: Response) {
   const user = req.user as UserTokenData;
   if (!user) throw new AppError("User not authorized.", 401);
 
-  console.log(firstName, lastName, profession, location);
-
   try {
     await prisma.profile.update({
       where: {
@@ -254,5 +252,35 @@ export async function editProfile(req: Request, res: Response) {
       }
     }
     throw new AppError("Unknown edit profile error", 500);
+  }
+}
+
+export async function aboutMe(req: Request, res: Response) {
+  const { about } = req.body;
+  const user = req.user as UserTokenData;
+  if (!user) throw new AppError("User not authorized.", 401);
+
+  try {
+    await prisma.profile.update({
+      where: {
+        userId: user.id,
+      },
+      data: {
+        about: about === undefined ? null : about,
+      },
+    });
+    return res.status(200).json({
+      success: true,
+      message: "About me updated successfully.",
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      switch (error.code) {
+        case "P2025": {
+          throw new AppError("User record not found.", 404);
+        }
+      }
+    }
+    throw new AppError("Unknown edit profile.", 500);
   }
 }

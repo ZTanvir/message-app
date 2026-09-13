@@ -80,7 +80,25 @@ async function editAboutMe(aboutMeData: AboutFormData) {
     credentials: "include",
   });
   if (!res.ok) {
-    return;
+    if (res.status === 400) {
+      const errorData: ApiError = await res.json().catch((error) => ({
+        message: error.error,
+        success: false,
+      }));
+      throw new ApiError(errorData.message, res.status);
+    } else if (res.status === 404) {
+      const errorData: ApiError = await res.json().catch((error) => ({
+        message: error.message,
+        success: false,
+      }));
+      throw new ApiError(errorData.message, res.status);
+    } else if (res.status === 500) {
+      const errorData: ApiError = await res.json().catch((error) => ({
+        message: error.message,
+        success: false,
+      }));
+      throw new ApiError(errorData.message, res.status);
+    }
   }
   const data = await res.json();
   return data;

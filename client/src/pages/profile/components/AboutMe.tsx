@@ -2,9 +2,10 @@ import { PencilIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import Spinner from "../../../components/Spinner";
 import { EditAboutMeSchema } from "@message-app/shared/zodSchemas/validationSchema";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import profileService from "../../../services/profileService";
 import type { AboutFormData } from "../../../types/componentTypes";
+import { useParams } from "react-router";
 
 type AboutMeProps = {
   about: string | null | undefined;
@@ -17,9 +18,16 @@ type AboutMeFormProps = {
 
 function AboutMeForm({ aboutData, handleCloseForm }: AboutMeFormProps) {
   const [about, setAbout] = useState(aboutData || "");
+  const { userId } = useParams();
+  const queryClient = useQueryClient();
+
   const editAboutMeMutation = useMutation({
     mutationFn: (newAboutMe: AboutFormData) => {
       return profileService.editAboutMe(newAboutMe);
+    },
+    onSuccess: () => {
+      handleCloseForm();
+      queryClient.invalidateQueries({ queryKey: ["profile", userId] });
     },
   });
 
@@ -39,6 +47,11 @@ function AboutMeForm({ aboutData, handleCloseForm }: AboutMeFormProps) {
       id="editAboutMe"
     >
       <div className="space-x-2">
+        {editAboutMeMutation.isError && (
+          <p className="py-2 text-red-400">
+            {editAboutMeMutation.error.message}
+          </p>
+        )}
         <textarea
           name="about"
           id="about"
@@ -88,7 +101,7 @@ export default function AboutMe({ about }: AboutMeProps) {
           handleCloseForm={() => setShowAboutForm(false)}
         />
       ) : about ? (
-        <p>{about}</p>
+        <p className="opacity-80">{about}</p>
       ) : (
         <p className="opacity-80">About me not added yet.</p>
       )}
