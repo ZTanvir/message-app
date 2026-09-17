@@ -5,6 +5,8 @@ import { ApiError } from "../../../services/apiError";
 import Spinner from "../../../components/Spinner";
 import { cn } from "../../../utils/schemas/cn";
 import type { ApiEndPath } from "../../../types/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router";
 
 type PhotoModalProps = {
   onChangePhoto: () => void;
@@ -18,6 +20,11 @@ type ServerResponseMessage = {
   type: "success" | "failed";
 };
 
+interface UploadAvatarParams {
+  formData: FormData;
+  apiEndPath: ApiEndPath;
+}
+
 export default function PhotoEditContainer({
   imageUrl,
   onChangePhoto,
@@ -28,7 +35,30 @@ export default function PhotoEditContainer({
   const fileInputEl = useRef<HTMLInputElement>(null);
   const [responseMessage, setResponseMessage] =
     useState<ServerResponseMessage | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { userId } = useParams();
+  const queryClient = useQueryClient();
+
+  const uploadAvatarImgMutation = useMutation({
+    mutationFn: ({ formData, apiEndPath }: UploadAvatarParams) => {
+      return profileService.uploadAvatarImg(formData, apiEndPath);
+    },
+    onSuccess: (data) => {
+      setResponseMessage({
+        message: data.message,
+        type: "success",
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["profile", userId],
+      });
+      onChangePhoto();
+    },
+    onError: (error) => {
+      if (error instanceof ApiError) {
+        setResponseMessage({ message: error.message, type: "failed" });
+      }
+    },
+  });
 
   const handleClearImage = () => {
     if (!fileInputEl.current) return;
@@ -50,21 +80,16 @@ export default function PhotoEditContainer({
     const file = fileInputEl.current.files?.[0] || "";
     const formData = new FormData();
     formData.append(`${fileName}`, file);
-    try {
-      setResponseMessage(null);
-      setIsLoading(true);
-      const data = await profileService.uploadAvatarImg(formData, apiEndPath);
-      if (data.success) {
-        setResponseMessage({ message: data.message, type: "success" });
-        onChangePhoto();
-      }
-    } catch (error) {
-      if (error instanceof ApiError) {
-        setResponseMessage({ message: error.message, type: "failed" });
-      }
-    } finally {
-      setIsLoading(false);
+    // Upload same image again
+    if (imgSrc && !file) {
+      setResponseMessage({
+        message: "Image already exists. Try a different one.",
+        type: "failed",
+      });
+      return;
     }
+    setResponseMessage(null);
+    uploadAvatarImgMutation.mutate({ formData, apiEndPath });
   };
 
   return (
@@ -135,7 +160,7 @@ export default function PhotoEditContainer({
           type="submit"
           className="flex items-center justify-center gap-x-2 rounded-sm bg-orange-600 px-5 py-2 font-bold text-white hover:cursor-pointer"
         >
-          {isLoading && <Spinner />}
+          {uploadAvatarImgMutation.isPending && <Spinner />}
           Save Changes
         </button>
       </form>

@@ -45,9 +45,6 @@ export default function ProfilePage() {
   };
   const handleOnChangeCoverPhoto = () => {
     coverPhotoDialog.current?.closeModal();
-    setTimeout(() => {
-      refetch();
-    }, 1000);
   };
 
   const handleOpenProfilePhotoDialog = () => {
@@ -55,9 +52,6 @@ export default function ProfilePage() {
   };
   const handleOnChangeProfilePhotoDialog = () => {
     profilePhotoDialog.current?.closeModal();
-    setTimeout(() => {
-      refetch();
-    }, 1000);
   };
 
   return (
