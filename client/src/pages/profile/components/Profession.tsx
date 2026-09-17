@@ -7,6 +7,7 @@ import { useParams } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import z from "zod";
 import Spinner from "../../../components/Spinner";
+import { cn } from "../../../utils/schemas/cn";
 
 type ProfessionProps = {
   profile: Profile;
@@ -173,14 +174,19 @@ export default function Profession({ profile }: ProfessionProps) {
     (profile.lastName ? profile.lastName : "");
 
   return (
-    <section className="flex flex-1 items-start justify-between p-4 md:pl-50 lg:pl-54">
+    <section
+      className={cn(
+        "flex flex-1 items-start p-4 md:justify-between md:pl-50 lg:pl-54",
+        isEditingProfile && "relative z-2 bg-white sm:static sm:z-0",
+      )}
+    >
       {isEditingProfile ? (
         <EditProfessionForm
           profile={profile}
           handleCloseForm={() => setIsEditingProfile(false)}
         />
       ) : (
-        <div className="mt-20 p-4 text-center md:mt-0 md:text-left">
+        <div className="mt-25 flex-1 text-center md:mt-0 md:text-left">
           <h2 className="text-4xl">{fullName}</h2>
           {profile.profession ? (
             <p className="opacity-80">{profile.profession}</p>

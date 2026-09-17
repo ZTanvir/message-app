@@ -133,7 +133,7 @@ export default function PhotoEditContainer({
 
         <button
           type="submit"
-          className="flex items-center gap-x-2 rounded-sm bg-orange-600 px-5 py-2 font-bold text-white hover:cursor-pointer"
+          className="flex items-center justify-center gap-x-2 rounded-sm bg-orange-600 px-5 py-2 font-bold text-white hover:cursor-pointer"
         >
           {isLoading && <Spinner />}
           Save Changes
