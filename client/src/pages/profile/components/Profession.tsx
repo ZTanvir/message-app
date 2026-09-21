@@ -81,12 +81,12 @@ function EditProfessionForm({
       id="editProfile"
     >
       {serverErrorMsg && <p className="py-2 text-red-500">{serverErrorMsg}</p>}
-      <div className="space-x-2">
+      <div className="flex items-center">
         <label htmlFor="firstName">First name:</label>
         <input
           type="text"
           id="firstName"
-          className="rounded-lg border border-gray-400/40 p-2"
+          className="ml-2 flex-1 rounded-lg border border-gray-400/40 p-2"
           value={profileFormData["firstName"]}
           onChange={(e) =>
             setProfileFormData((prev) => ({
@@ -99,12 +99,12 @@ function EditProfessionForm({
           <p className="text-red-500">{profileFormErrors["firstName"]}</p>
         )}
       </div>
-      <div className="space-x-2">
+      <div className="flex items-center">
         <label htmlFor="lastName">Last name:</label>
         <input
           type="text"
           id="lastName"
-          className="rounded-lg border border-gray-400/40 p-2"
+          className="ml-2 flex-1 rounded-lg border border-gray-400/40 p-2"
           value={profileFormData["lastName"]}
           onChange={(e) =>
             setProfileFormData((prev) => ({
@@ -114,12 +114,12 @@ function EditProfessionForm({
           }
         />
       </div>
-      <div className="space-x-2">
+      <div className="flex items-center">
         <label htmlFor="profession">Profession:</label>
         <input
           type="text"
           id="profession"
-          className="rounded-lg border border-gray-400/40 p-2"
+          className="ml-2 flex-1 rounded-lg border border-gray-400/40 p-2"
           value={profileFormData["profession"]}
           onChange={(e) =>
             setProfileFormData((prev) => ({
@@ -129,12 +129,12 @@ function EditProfessionForm({
           }
         />
       </div>
-      <div className="space-x-2">
+      <div className="flex items-center">
         <label htmlFor="location">Location:</label>
         <input
           type="text"
           id="location"
-          className="rounded-lg border border-gray-400/40 p-2"
+          className="ml-2 flex-1 rounded-lg border border-gray-400/40 p-2"
           value={profileFormData["location"]}
           onChange={(e) =>
             setProfileFormData((prev) => ({
