@@ -3,12 +3,16 @@ export type ApiErrorResponse = {
   message: string;
   stack?: string;
 };
+export type ApiEndPath = "uploadCoverImg" | "uploadProfileImg";
+
 export type Profile = {
   id: string;
-  username?: string;
-  firstName?: string;
-  lastName?: string;
-  profession?: string;
-  about?: string;
-  location?: string;
+  username?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  profession?: string | null;
+  about?: string | null;
+  location?: string | null;
+  coverImgUrl?: string | null;
+  profileImgUrl?: string | null;
 };

@@ -38,6 +38,8 @@ const envSchema = z.object({
   //   Database
   DATABASE_URL: z.string().startsWith("postgresql://"),
   JWT_SECRET: z.string().min(32, "Jwt secret must contain 32 characters"),
+  PUBLIC_SUPABASE_URL: z.string().startsWith("https://"),
+  PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string(),
 });
 
 type Env = z.infer<typeof envSchema>;
