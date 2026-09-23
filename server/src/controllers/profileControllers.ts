@@ -225,6 +225,8 @@ export function uploadProfileImg(
 export async function editProfile(req: Request, res: Response) {
   const { firstName, lastName, profession, location } = req.body;
   const user = req.user as UserTokenData;
+  console.log("user", user);
+
   if (!user) throw new AppError("User not authorized.", 401);
 
   try {

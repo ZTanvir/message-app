@@ -8,6 +8,7 @@ import passport from "passport";
 import { setupJwtStrategy } from "./config/passport.ts";
 import authRoute from "./routes/authRoutes.ts";
 import profileRoute from "./routes/profileRoutes.ts";
+import conversationRoute from "./routes/conversationRoutes.ts";
 import globalErrorHandler from "./middlewares/globalErrorHandler.ts";
 
 app.use(express.json());
@@ -34,6 +35,7 @@ app.get("/health", async (req, res) => {
 
 app.use("/api/auth", authRoute);
 app.use("/api/profile", profileRoute);
+app.use("/api/conversation", conversationRoute);
 
 app.use(globalErrorHandler);
 

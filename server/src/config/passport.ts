@@ -5,7 +5,7 @@ import { prisma } from "../lib/prisma.ts";
 import type { Request } from "express";
 
 type JwtPayload = {
-  sub: string;
+  id: string;
   email: string;
 };
 
@@ -28,14 +28,13 @@ export const setupJwtStrategy = (passport: PassportStatic) => {
       try {
         const user = await prisma.user.findFirst({
           where: {
-            id: jwt_payload.sub,
+            id: jwt_payload.id,
           },
           select: {
             email: true,
             id: true,
           },
         });
-
         if (user) return done(null, user);
         return done(null, false);
       } catch (error) {
