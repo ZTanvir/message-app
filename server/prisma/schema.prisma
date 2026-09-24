@@ -43,10 +43,10 @@ model message {
   id              Int          @id @default(autoincrement())
   conversation_id Int
   conversation    Conversation @relation(fields: [conversation_id], references: [id])
-  sender_id       Int
+  sender_id       String
   body            String       @db.Text
   type            MessageType  @default(TEXT)
-  receiver_id     Int
+  receiver_id     String
   created_at      DateTime     @default(now())
 }
 
