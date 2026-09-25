@@ -12,6 +12,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import AppPage from "./pages/app";
 import ProfilePage from "./pages/profile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Chat from "./pages/home/components/Chat";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,9 @@ createRoot(document.getElementById("root")!).render(
           <Routes>
             <Route path="/" element={<AppPage />} />
             <Route element={<DashboardLayout />}>
-              <Route path="/messages/*" element={<HomePage />} />
+              <Route path="/messages" element={<HomePage />}>
+                <Route path=":chatId" element={<Chat />} />
+              </Route>
               <Route path="/profile/:userId" element={<ProfilePage />} />
             </Route>
 
