@@ -7,6 +7,8 @@ export default function AppPage() {
   if (user === null) {
     return <Navigate to="/login" replace state={{ path: location.pathname }} />;
   } else if (user) {
-    return <Navigate to="/home" replace state={{ path: location.pathname }} />;
+    return (
+      <Navigate to="/messages" replace state={{ path: location.pathname }} />
+    );
   }
 }

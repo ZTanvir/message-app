@@ -64,7 +64,7 @@ export default function SignUp() {
 
       const redirectTime = 2000;
       setTimeout(() => {
-        navigate(state?.path || "/home");
+        navigate(state?.path || "/messages");
       }, redirectTime);
     } catch (_error) {
       setServerMessage({
