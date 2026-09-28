@@ -1,7 +1,8 @@
 import { ApiError } from "./apiError";
 import { apiUrl } from "./config";
+import type { Participants } from "../types/api";
 
-async function getParticipants() {
+async function getParticipants(): Promise<Participants[]> {
   const res = await fetch(`${apiUrl}/api/conversation/participants`, {
     credentials: "include",
   });
@@ -11,9 +12,8 @@ async function getParticipants() {
   const data = await res.json();
   if (data.success) {
     return data.users;
-  } else if (!data.success) {
-    throw new ApiError(data.message, res.status);
   }
+  throw new ApiError(data.message, res.status);
 }
 
 export default {

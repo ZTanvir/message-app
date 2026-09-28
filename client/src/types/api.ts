@@ -16,3 +16,16 @@ export type Profile = {
   coverImgUrl?: string | null;
   profileImgUrl?: string | null;
 };
+export type MessageType = "TEXT" | "FILE";
+export type LastMessage = { body: string; type: MessageType; created_at: Date };
+
+export type Participants = {
+  id: string;
+  email: string;
+  lastMessage: null | LastMessage;
+  profile: {
+    firstName: string;
+    lastName: string;
+    profileImgUrl: string;
+  };
+};

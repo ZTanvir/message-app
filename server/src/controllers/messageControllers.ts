@@ -47,8 +47,10 @@ export async function getParticipants(req: Request, res: Response) {
           type: true,
           sender_id: true,
           receiver_id: true,
+          created_at: true,
         },
       });
+
       usersWithMessage.push({ ...user, lastMessage });
     }
 
