@@ -44,7 +44,7 @@ function Participant({
         <h3>{fullname}</h3>
         <p className="text-xs text-gray-700">{lastConversation}</p>
       </div>
-      <p className="self-start text-xs text-gray-700">{timeAgo}</p>
+      {timeAgo && <p className="self-start text-xs text-gray-700">{timeAgo}</p>}
     </div>
   );
 }
