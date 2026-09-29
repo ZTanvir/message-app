@@ -33,14 +33,16 @@ function Participant({
   );
 
   dayjs.extend(relativeTime);
-  const timeAgo = dayjs(lastMessage?.created_at).fromNow();
+  const timeAgo = lastMessage?.created_at
+    ? dayjs(lastMessage.created_at).fromNow()
+    : null;
 
   return (
     <div className="flex items-center gap-x-2 border-b border-b-gray-200 px-4 py-2">
       <ProfileImg imageUrl={profileImgUrl} className="h-12 w-12 rounded-full" />
       <div className="flex-1">
         <h3>{fullname}</h3>
-        <p className="text-sm text-gray-700">{lastConversation}</p>
+        <p className="text-xs text-gray-700">{lastConversation}</p>
       </div>
       <p className="self-start text-xs text-gray-700">{timeAgo}</p>
     </div>
@@ -57,12 +59,11 @@ export default function Conversation() {
     refetch();
   };
   const Header = (
-    <header className="flex flex-col">
+    <header className="flex h-20 flex-col border-b border-b-gray-200">
       <h2 className="flex items-center gap-x-1 px-4 py-6">
         <Bars3CenterLeftIcon className="h-7 w-7" />
         <span className="text-2xl">User Messages</span>
       </h2>
-      <hr className="text-gray-300" />
     </header>
   );
   if (isPending) {
@@ -102,7 +103,16 @@ export default function Conversation() {
         {Header}
         <div className="overflow-auto">
           {data.map((user) => (
-            <Link key={user.id} to={String(user.id)}>
+            <Link
+              key={user.id}
+              state={{
+                email: user.email,
+                avatarImg: user.profile.profileImgUrl,
+                firstName: user.profile.firstName,
+                lastName: user.profile.lastName,
+              }}
+              to={String(user.id)}
+            >
               <Participant
                 profile={user.profile}
                 lastMessage={user.lastMessage}
