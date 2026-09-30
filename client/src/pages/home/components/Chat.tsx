@@ -7,11 +7,35 @@ import {
   PlayIcon,
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import messagesService from "../../../services/messagesService";
+import type { MessageType } from "../../../types/api";
+interface SendMessageVariables {
+  receiverId: string;
+  senderMsgType: MessageType;
+  senderMessage: string;
+}
 
 export default function Chat() {
   const location = useLocation();
   const { chatId } = useParams();
   const [message, setMessage] = useState("");
+  const mutation = useMutation({
+    mutationFn: ({
+      receiverId,
+      senderMsgType,
+      senderMessage,
+    }: SendMessageVariables) => {
+      return messagesService.sendMessage(
+        receiverId,
+        senderMsgType,
+        senderMessage,
+      );
+    },
+    onSuccess: () => {
+      setMessage("");
+    },
+  });
   const { email, avatarImg, firstName, lastName } = location.state || {};
   const fullName = firstName + " " + lastName;
   const profileImgUrl = avatarImg
@@ -20,7 +44,13 @@ export default function Chat() {
 
   const handleSubmitMessage = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(message);
+    if (chatId) {
+      mutation.mutate({
+        receiverId: chatId,
+        senderMsgType: "TEXT",
+        senderMessage: message,
+      });
+    }
   };
   return (
     <section className="w-full md:w-6/10">
@@ -64,8 +94,9 @@ export default function Chat() {
             className="w-full px-4 py-4"
           />
           <button
-            className="absolute top-[50%] right-2 -translate-y-1/2"
+            className="absolute top-[50%] right-2 -translate-y-1/2 hover:cursor-pointer disabled:hover:cursor-not-allowed"
             type="submit"
+            disabled={mutation.isPending}
           >
             <PlayIcon className="h-8 w-8 text-gray-600" />
           </button>
