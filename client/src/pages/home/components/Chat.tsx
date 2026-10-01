@@ -5,6 +5,7 @@ import {
   EllipsisVerticalIcon,
   ArrowLeftIcon,
   PlayIcon,
+  PhotoIcon,
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -82,17 +83,40 @@ export default function Chat() {
         <form
           id="conversation"
           onSubmit={handleSubmitMessage}
+          encType="multipart/form-data"
           className="relative mt-auto rounded-xl border border-gray-300 shadow-md"
         >
-          <input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            type="text"
-            name="message"
-            id="message"
-            placeholder="Send your message.."
-            className="w-full px-4 py-4"
-          />
+          <div className="flex-1">
+            <input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              type="text"
+              name="message"
+              id="message"
+              placeholder="Send your message.."
+              className="w-full px-4 py-4"
+              autoComplete="off"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="msgFiles"
+              title="add photo"
+              className="absolute top-[50%] right-10 -translate-y-1/2 hover:cursor-pointer"
+            >
+              <PhotoIcon className="h-5 w-5" />
+              <span className="sr-only">add photo</span>
+            </label>
+            <input
+              type="file"
+              name="msgFiles"
+              id="msgFiles"
+              multiple
+              accept="image/*"
+              className="hidden"
+            />
+          </div>
+          <div>dsdsd</div>
           <button
             className="absolute top-[50%] right-2 -translate-y-1/2 hover:cursor-pointer disabled:hover:cursor-not-allowed"
             type="submit"
