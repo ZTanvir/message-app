@@ -6,6 +6,7 @@ import {
   ArrowLeftIcon,
   PlayIcon,
   PhotoIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -21,6 +22,7 @@ export default function Chat() {
   const location = useLocation();
   const { chatId } = useParams();
   const [message, setMessage] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const mutation = useMutation({
     mutationFn: ({
       receiverId,
@@ -53,6 +55,17 @@ export default function Chat() {
       });
     }
   };
+  const handleUploadFileChange = (
+    e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
+  ) => {
+    const uploadedFiles = e.currentTarget.files;
+    setSelectedFiles(uploadedFiles);
+  };
+  const handleRemoveFile = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    const fileName = e.currentTarget.dataset.fileid;
+  };
   return (
     <section className="w-full md:w-6/10">
       <header className="flex h-20 border-b border-b-gray-200 px-4 py-6">
@@ -84,7 +97,7 @@ export default function Chat() {
           id="conversation"
           onSubmit={handleSubmitMessage}
           encType="multipart/form-data"
-          className="relative mt-auto rounded-xl border border-gray-300 shadow-md"
+          className="relative mt-auto mb-6 rounded-lg border border-gray-300 shadow-md lg:mb-0"
         >
           <div className="flex-1">
             <input
@@ -114,9 +127,34 @@ export default function Chat() {
               multiple
               accept="image/*"
               className="hidden"
+              onChange={handleUploadFileChange}
             />
           </div>
-          <div>dsdsd</div>
+          {selectedFiles && (
+            <div className="m-2 flex flex-wrap items-end gap-1">
+              {Object.values(selectedFiles).map((file) => (
+                <div
+                  key={file.name}
+                  className="relative mr-2 flex items-center gap-x-2 rounded-xl bg-orange-500 p-2 text-xs text-white"
+                >
+                  <img
+                    className="h-5 w-5 rounded-sm"
+                    src={URL.createObjectURL(file)}
+                    alt="preview"
+                  />
+                  <span>{file.name}</span>
+                  <button
+                    data-fileId={file.name}
+                    onClick={handleRemoveFile}
+                    className="absolute -top-1.5 -right-1.5 overflow-hidden text-gray-800 hover:cursor-pointer hover:opacity-80"
+                  >
+                    <XCircleIcon className="h-6 w-6" />
+                    <span className="sr-only">close</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
           <button
             className="absolute top-[50%] right-2 -translate-y-1/2 hover:cursor-pointer disabled:hover:cursor-not-allowed"
             type="submit"
