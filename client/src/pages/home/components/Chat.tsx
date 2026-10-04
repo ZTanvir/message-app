@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import messagesService from "../../../services/messagesService";
 import type { MessageType } from "../../../types/api";
 import { cn } from "../../../utils/schemas/cn";
+
 interface SendMessageVariables {
   receiverId: string;
   senderMsgType: MessageType;
@@ -23,7 +24,7 @@ export default function Chat() {
   const location = useLocation();
   const { chatId } = useParams();
   const [message, setMessage] = useState("");
-  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const mutation = useMutation({
     mutationFn: ({
       receiverId,
@@ -59,13 +60,15 @@ export default function Chat() {
   const handleUploadFileChange = (
     e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
   ) => {
-    const uploadedFiles = e.currentTarget.files;
-    setSelectedFiles(uploadedFiles);
+    if (!e.currentTarget.files) return;
+    const filesArray = Array.from(e.currentTarget.files);
+    setSelectedFiles(filesArray);
   };
-  const handleRemoveFile = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    const fileName = e.currentTarget.dataset.fileid;
+  const handleRemoveFile = (fileName: string) => {
+    setSelectedFiles((prev) => {
+      const updatedFiles = prev.filter((file) => file.name !== fileName);
+      return updatedFiles;
+    });
   };
   return (
     <section className="w-full md:w-6/10">
@@ -118,7 +121,7 @@ export default function Chat() {
               title="add photo"
               className={cn(
                 "absolute top-[50%] right-10 -translate-y-1/2 hover:cursor-pointer",
-                selectedFiles ? "opacity-100" : "opacity-50",
+                selectedFiles.length ? "opacity-100" : "opacity-50",
               )}
             >
               <PhotoIcon className="h-5 w-5" />
@@ -134,9 +137,9 @@ export default function Chat() {
               onChange={handleUploadFileChange}
             />
           </div>
-          {selectedFiles && (
+          {Boolean(selectedFiles.length) && (
             <div className="m-2 flex flex-wrap items-end gap-1">
-              {Object.values(selectedFiles).map((file) => (
+              {selectedFiles.map((file) => (
                 <div
                   key={file.name}
                   className="relative mr-2 flex items-center gap-x-2 rounded-xl bg-orange-500 p-2 text-xs text-white"
@@ -149,7 +152,7 @@ export default function Chat() {
                   <span>{file.name}</span>
                   <button
                     data-fileid={file.name}
-                    onClick={handleRemoveFile}
+                    onClick={() => handleRemoveFile(file.name)}
                     className="absolute -top-1.5 -right-1.5 overflow-hidden text-gray-800 hover:cursor-pointer hover:opacity-80"
                   >
                     <XCircleIcon className="h-6 w-6" />
