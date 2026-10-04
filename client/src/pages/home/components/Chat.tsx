@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import messagesService from "../../../services/messagesService";
 import type { MessageType } from "../../../types/api";
+import { cn } from "../../../utils/schemas/cn";
 interface SendMessageVariables {
   receiverId: string;
   senderMsgType: MessageType;
@@ -115,7 +116,10 @@ export default function Chat() {
             <label
               htmlFor="msgFiles"
               title="add photo"
-              className="absolute top-[50%] right-10 -translate-y-1/2 hover:cursor-pointer"
+              className={cn(
+                "absolute top-[50%] right-10 -translate-y-1/2 hover:cursor-pointer",
+                selectedFiles ? "opacity-100" : "opacity-50",
+              )}
             >
               <PhotoIcon className="h-5 w-5" />
               <span className="sr-only">add photo</span>
@@ -144,7 +148,7 @@ export default function Chat() {
                   />
                   <span>{file.name}</span>
                   <button
-                    data-fileId={file.name}
+                    data-fileid={file.name}
                     onClick={handleRemoveFile}
                     className="absolute -top-1.5 -right-1.5 overflow-hidden text-gray-800 hover:cursor-pointer hover:opacity-80"
                   >
