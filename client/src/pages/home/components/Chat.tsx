@@ -14,6 +14,46 @@ import messagesService from "../../../services/messagesService";
 import type { MessageType } from "../../../types/api";
 import { cn } from "../../../utils/schemas/cn";
 
+type RenderUploadedFilesProps = {
+  FileList: File[];
+  handleRemoveFile: (fileName: File["name"]) => void;
+};
+
+function RenderUploadedFiles({
+  FileList,
+  handleRemoveFile,
+}: RenderUploadedFilesProps) {
+  return (
+    <>
+      {Boolean(FileList.length) && (
+        <div className="m-2 flex flex-wrap items-end gap-1">
+          {FileList.map((file) => (
+            <div
+              key={file.name}
+              className="relative mr-2 flex items-center gap-x-2 rounded-xl bg-orange-500 p-2 text-xs text-white"
+            >
+              <img
+                className="h-5 w-5 rounded-sm"
+                src={URL.createObjectURL(file)}
+                alt="preview"
+              />
+              <span>{file.name}</span>
+              <button
+                data-fileid={file.name}
+                onClick={() => handleRemoveFile(file.name)}
+                className="absolute -top-1.5 -right-1.5 overflow-hidden text-gray-800 hover:cursor-pointer hover:opacity-80"
+              >
+                <XCircleIcon className="h-6 w-6" />
+                <span className="sr-only">close</span>
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
 interface SendMessageVariables {
   receiverId: string;
   senderMsgType: MessageType;
@@ -137,31 +177,11 @@ export default function Chat() {
               onChange={handleUploadFileChange}
             />
           </div>
-          {Boolean(selectedFiles.length) && (
-            <div className="m-2 flex flex-wrap items-end gap-1">
-              {selectedFiles.map((file) => (
-                <div
-                  key={file.name}
-                  className="relative mr-2 flex items-center gap-x-2 rounded-xl bg-orange-500 p-2 text-xs text-white"
-                >
-                  <img
-                    className="h-5 w-5 rounded-sm"
-                    src={URL.createObjectURL(file)}
-                    alt="preview"
-                  />
-                  <span>{file.name}</span>
-                  <button
-                    data-fileid={file.name}
-                    onClick={() => handleRemoveFile(file.name)}
-                    className="absolute -top-1.5 -right-1.5 overflow-hidden text-gray-800 hover:cursor-pointer hover:opacity-80"
-                  >
-                    <XCircleIcon className="h-6 w-6" />
-                    <span className="sr-only">close</span>
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+          {/* User can choose their files */}
+          <RenderUploadedFiles
+            FileList={selectedFiles}
+            handleRemoveFile={handleRemoveFile}
+          />
           <button
             className="absolute top-[50%] right-2 -translate-y-1/2 hover:cursor-pointer disabled:hover:cursor-not-allowed"
             type="submit"
