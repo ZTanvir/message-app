@@ -18,14 +18,20 @@ async function getParticipants(): Promise<Participants[]> {
 
 async function sendMessage(
   receiverId: string,
-  senderMsgType: MessageType,
-  senderMessage: string,
+  messageType: MessageType,
+  senderMessage?: string,
+  formData?: FormData,
 ) {
   const res = await fetch(`${apiUrl}/api/conversation/with/${receiverId}`, {
     method: "POST",
     credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ receiverId, senderMsgType, senderMessage }),
+    headers: {
+      ...(messageType === "TEXT" && { "Content-Type": "application/json" }),
+    },
+    body:
+      messageType === "TEXT"
+        ? JSON.stringify({ receiverId, messageType, senderMessage })
+        : formData,
   });
   if (!res.ok) {
     throw new ApiError("Something went wrong", res.status);

@@ -56,8 +56,9 @@ function RenderUploadedFiles({
 
 interface SendMessageVariables {
   receiverId: string;
-  senderMsgType: MessageType;
-  senderMessage: string;
+  messageType: MessageType;
+  senderMessage?: string;
+  formData?: FormData;
 }
 
 export default function Chat() {
@@ -68,13 +69,15 @@ export default function Chat() {
   const mutation = useMutation({
     mutationFn: ({
       receiverId,
-      senderMsgType,
+      messageType,
       senderMessage,
+      formData,
     }: SendMessageVariables) => {
       return messagesService.sendMessage(
         receiverId,
-        senderMsgType,
+        messageType,
         senderMessage,
+        formData,
       );
     },
     onSuccess: () => {
@@ -86,15 +89,28 @@ export default function Chat() {
   const profileImgUrl = avatarImg
     ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/message_app/${avatarImg}`
     : null;
-
   const handleSubmitMessage = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (chatId) {
-      mutation.mutate({
-        receiverId: chatId,
-        senderMsgType: "TEXT",
-        senderMessage: message,
-      });
+      const msgType: MessageType = selectedFiles.length ? "FILE" : "TEXT";
+      if (msgType === "TEXT") {
+        mutation.mutate({
+          receiverId: chatId,
+          messageType: msgType,
+          senderMessage: message,
+        });
+      } else {
+        const formData = new FormData();
+        for (const file of selectedFiles) {
+          formData.append("messageImage", file);
+        }
+        formData.append("messageType", msgType);
+        mutation.mutate({
+          receiverId: chatId,
+          messageType: msgType,
+          formData: formData,
+        });
+      }
     }
   };
   const handleUploadFileChange = (
