@@ -39,16 +39,3 @@ export const EditProfileSchema = z.object({
 export const EditAboutMeSchema = z.object({
   about: z.string().min(1, "About me is too small.").optional(),
 });
-
-export const SendMessageSchema = z.discriminatedUnion("messageType", [
-  z.object({
-    receiverId: z.string(),
-    messageType: z.literal("TEXT"),
-    senderMessage: z.string(),
-  }),
-  z.object({
-    receiverId: z.string(),
-    messageType: z.literal("FILE"),
-    formData: z.object({}),
-  }),
-]);

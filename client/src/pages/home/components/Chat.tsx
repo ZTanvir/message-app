@@ -12,7 +12,9 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import messagesService from "../../../services/messagesService";
 import type { MessageType } from "../../../types/api";
+import { SendMessageSchema } from "../../../utils/schemas/zodSchemas/apiSchemas";
 import { cn } from "../../../utils/schemas/cn";
+import z from "zod";
 
 type RenderUploadedFilesProps = {
   FileList: File[];
@@ -93,24 +95,40 @@ export default function Chat() {
     e.preventDefault();
     if (chatId) {
       const msgType: MessageType = selectedFiles.length ? "FILE" : "TEXT";
+      let messageObj;
       if (msgType === "TEXT") {
         mutation.mutate({
           receiverId: chatId,
           messageType: msgType,
           senderMessage: message,
         });
+        messageObj = {
+          receiverId: chatId,
+          messageType: msgType,
+          senderMessage: message,
+        };
       } else {
         const formData = new FormData();
         for (const file of selectedFiles) {
           formData.append("messageImage", file);
         }
         formData.append("messageType", msgType);
-        mutation.mutate({
+        console.log(formData.getAll("messageImage"));
+        messageObj = {
           receiverId: chatId,
           messageType: msgType,
-          formData: formData,
-        });
+          formData: {
+            messageImage: formData.getAll("messageImage"),
+            messageType: msgType,
+          },
+        };
       }
+      const result = SendMessageSchema.safeParse(messageObj);
+      if (!result.success) {
+        const errors = z.flattenError(result.error);
+        console.error(errors);
+      }
+      console.log(result.data);
     }
   };
   const handleUploadFileChange = (
