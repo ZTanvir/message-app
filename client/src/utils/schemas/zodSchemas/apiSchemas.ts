@@ -15,7 +15,6 @@ export const SendMessageSchema = z.discriminatedUnion("messageType", [
     senderMessage: z.string().min(1, "Message can't be empty."),
   }),
   z.object({
-    receiverId: z.string(),
     messageType: z.literal("FILE"),
     formData: z.object({
       messageImage: z
@@ -30,6 +29,7 @@ export const SendMessageSchema = z.discriminatedUnion("messageType", [
           "Only .jpg, .jpeg, .png, and .webp formats are supported.",
         ),
       messageType: z.literal("FILE"),
+      receiverId: z.string(),
     }),
   }),
 ]);

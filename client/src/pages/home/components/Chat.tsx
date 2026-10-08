@@ -113,11 +113,11 @@ export default function Chat() {
               senderMessage: message,
             }
           : {
-              receiverId: chatId,
               messageType: msgType,
               formData: {
                 messageImage: selectedFiles,
                 messageType: msgType,
+                receiverId: chatId,
               },
             };
       const result = SendMessageSchema.safeParse(messageObj);
@@ -132,6 +132,7 @@ export default function Chat() {
         formData.append("messageImage", file);
       }
       formData.append("messageType", msgType);
+      formData.append("receiverId", chatId);
       mutation.mutate({
         receiverId: chatId,
         messageType: msgType,
