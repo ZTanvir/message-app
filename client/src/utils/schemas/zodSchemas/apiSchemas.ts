@@ -1,6 +1,6 @@
 import z from "zod";
+import { maxFileSize } from "../../../constants";
 
-const maxFileSize = 2 * 1024 * 1024; // 2MB
 const acceptedImageTypes = [
   "image/jpeg",
   "image/jpg",
@@ -19,19 +19,16 @@ export const SendMessageSchema = z.discriminatedUnion("messageType", [
     messageType: z.literal("FILE"),
     formData: z.object({
       messageImage: z
-        .array(
-          z
-            .instanceof(File, { message: "Please upload a valid file." })
-            .refine(
-              (file) => file.size <= maxFileSize,
-              "Max image size is 2MB.",
-            )
-            .refine(
-              (file) => acceptedImageTypes.includes(file.type),
-              "Only .jpg, .jpeg, .png, and .webp formats are supported.",
-            ),
+        .array(z.instanceof(File, { message: "Please upload a valid file." }))
+        .refine(
+          (files) => files.every((file) => file.size <= maxFileSize),
+          "Max image size is 2MB.",
         )
-        .min(1, "At least one image is required."),
+        .refine(
+          (files) =>
+            files.every((file) => acceptedImageTypes.includes(file.type)),
+          "Only .jpg, .jpeg, .png, and .webp formats are supported.",
+        ),
       messageType: z.literal("FILE"),
     }),
   }),

@@ -14,10 +14,14 @@ import messagesService from "../../../services/messagesService";
 import type { MessageType } from "../../../types/api";
 import { SendMessageSchema } from "../../../utils/schemas/zodSchemas/apiSchemas";
 import { cn } from "../../../utils/schemas/cn";
+import { maxFileSize } from "../../../constants";
 import z from "zod";
 
+interface UploadedFile extends File {
+  isLarge: boolean;
+}
 type RenderUploadedFilesProps = {
-  FileList: File[];
+  FileList: UploadedFile[];
   handleRemoveFile: (fileName: File["name"]) => void;
 };
 
@@ -32,7 +36,10 @@ function RenderUploadedFiles({
           {FileList.map((file) => (
             <div
               key={file.name}
-              className="relative mr-2 flex items-center gap-x-2 rounded-xl bg-orange-500 p-2 text-xs text-white"
+              className={cn(
+                "relative mr-2 flex items-center gap-x-2 rounded-xl p-2 text-xs text-white",
+                file.isLarge ? "bg-red-500" : "bg-orange-500",
+              )}
             >
               <img
                 className="h-5 w-5 rounded-sm"
@@ -67,7 +74,8 @@ export default function Chat() {
   const location = useLocation();
   const { chatId } = useParams();
   const [message, setMessage] = useState("");
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<UploadedFile[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string[] | null>(null);
   const mutation = useMutation({
     mutationFn: ({
       receiverId,
@@ -93,42 +101,43 @@ export default function Chat() {
     : null;
   const handleSubmitMessage = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMessage(null);
+
     if (chatId) {
       const msgType: MessageType = selectedFiles.length ? "FILE" : "TEXT";
-      let messageObj;
-      if (msgType === "TEXT") {
-        mutation.mutate({
-          receiverId: chatId,
-          messageType: msgType,
-          senderMessage: message,
-        });
-        messageObj = {
-          receiverId: chatId,
-          messageType: msgType,
-          senderMessage: message,
-        };
-      } else {
-        const formData = new FormData();
-        for (const file of selectedFiles) {
-          formData.append("messageImage", file);
-        }
-        formData.append("messageType", msgType);
-        console.log(formData.getAll("messageImage"));
-        messageObj = {
-          receiverId: chatId,
-          messageType: msgType,
-          formData: {
-            messageImage: formData.getAll("messageImage"),
-            messageType: msgType,
-          },
-        };
-      }
+      const messageObj =
+        msgType === "TEXT"
+          ? {
+              receiverId: chatId,
+              messageType: msgType,
+              senderMessage: message,
+            }
+          : {
+              receiverId: chatId,
+              messageType: msgType,
+              formData: {
+                messageImage: selectedFiles,
+                messageType: msgType,
+              },
+            };
       const result = SendMessageSchema.safeParse(messageObj);
       if (!result.success) {
         const errors = z.flattenError(result.error);
-        console.error(errors);
+        const errorMessages = Object.values(errors.fieldErrors).flat();
+        setErrorMessage(errorMessages);
+        return;
       }
-      console.log(result.data);
+      const formData = new FormData();
+      for (const file of selectedFiles) {
+        formData.append("messageImage", file);
+      }
+      formData.append("messageType", msgType);
+      mutation.mutate({
+        receiverId: chatId,
+        messageType: msgType,
+        senderMessage: msgType === "TEXT" ? message : undefined,
+        formData: msgType === "FILE" ? formData : undefined,
+      });
     }
   };
   const handleUploadFileChange = (
@@ -136,7 +145,13 @@ export default function Chat() {
   ) => {
     if (!e.currentTarget.files) return;
     const filesArray = Array.from(e.currentTarget.files);
-    setSelectedFiles(filesArray);
+    const filesWithLargeCheck = filesArray.map((item) => {
+      if (item.size > maxFileSize) {
+        return Object.assign(item, { isLarge: true });
+      }
+      return Object.assign(item, { isLarge: false });
+    });
+    setSelectedFiles(filesWithLargeCheck);
   };
   const handleRemoveFile = (fileName: string) => {
     setSelectedFiles((prev) => {
@@ -211,11 +226,23 @@ export default function Chat() {
               onChange={handleUploadFileChange}
             />
           </div>
+
           {/* User can choose their files */}
           <RenderUploadedFiles
             FileList={selectedFiles}
             handleRemoveFile={handleRemoveFile}
           />
+          {/* User will send proper data  */}
+          {errorMessage && (
+            <div className="m-2">
+              {errorMessage.map((msg, index) => (
+                <p className="mb-1 text-sm text-red-500" key={index}>
+                  {msg}
+                </p>
+              ))}
+            </div>
+          )}
+
           <button
             className="absolute top-[50%] right-2 -translate-y-1/2 hover:cursor-pointer disabled:hover:cursor-not-allowed"
             type="submit"
