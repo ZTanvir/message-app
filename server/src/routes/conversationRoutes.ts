@@ -17,21 +17,23 @@ conversationRoute.get("/participants", getParticipants);
 
 conversationRoute.post("/with/:userId", (req, res) => {
   uploadMessageImages(req, res, function (err) {
-    const { messageType, receiverId } = req.body;
+    const { messageType } = req.body;
 
     if (messageType === "TEXT") {
-      console.log(messageType, receiverId, req.body);
+      const { receiverId, messageType, senderMessage } = req.body;
 
       return res.status(200).json({
         success: true,
       });
     } else {
+      const { receiverId, messageType } = req.body;
+      console.log("file body", receiverId, messageType);
+
       if (err instanceof multer.MulterError) {
         // A Multer error occurred when uploading.
       } else if (err) {
         // An unknown error occurred when uploading.
       }
-      console.log(messageType, "id:", receiverId, "body", "files", req.files);
     }
 
     // Everything went fine.
