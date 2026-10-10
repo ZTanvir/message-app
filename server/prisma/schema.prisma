@@ -33,10 +33,11 @@ model Profile {
 }
 
 model Conversation {
-  id         Int              @id @default(autoincrement())
-  type       ConversationType @default(DIRECT)
-  created_at DateTime         @default(now())
-  messages   message[]
+  id           Int              @id @default(autoincrement())
+  type         ConversationType @default(DIRECT)
+  participants String           @unique
+  created_at   DateTime         @default(now())
+  messages     message[]
 }
 
 model message {
