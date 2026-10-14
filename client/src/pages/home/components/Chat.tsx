@@ -90,8 +90,9 @@ export default function Chat() {
         formData,
       );
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setMessage("");
+      console.log("message sent response:", data);
     },
   });
   const { email, avatarImg, firstName, lastName } = location.state || {};
