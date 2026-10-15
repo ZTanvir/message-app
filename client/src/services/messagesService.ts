@@ -33,9 +33,9 @@ async function sendMessage(
         ? JSON.stringify({ receiverId, messageType, senderMessage })
         : formData,
   });
-  if (!res.ok) {
-    throw new ApiError("Something went wrong", res.status);
-  }
+  // if (!res.ok) {
+  //   throw new ApiError("Something went wrong", res.status);
+  // }
   const data = await res.json();
   if (data.success) {
     return data;

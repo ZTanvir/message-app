@@ -94,6 +94,9 @@ export default function Chat() {
       setMessage("");
       console.log("message sent response:", data);
     },
+    onError: (error) => {
+      console.log("file error", error.message);
+    },
   });
   const { email, avatarImg, firstName, lastName } = location.state || {};
   const fullName = firstName + " " + lastName;

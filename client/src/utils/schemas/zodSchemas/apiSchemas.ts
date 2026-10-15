@@ -19,6 +19,7 @@ export const SendMessageSchema = z.discriminatedUnion("messageType", [
     formData: z.object({
       messageImage: z
         .array(z.instanceof(File, { message: "Please upload a valid file." }))
+        .refine((files) => files.length <= 5, "Maximum 5 files allowed.")
         .refine(
           (files) => files.every((file) => file.size <= maxFileSize),
           "Max image size is 2MB.",
