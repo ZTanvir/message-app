@@ -33,14 +33,12 @@ async function sendMessage(
         ? JSON.stringify({ receiverId, messageType, senderMessage })
         : formData,
   });
-  // if (!res.ok) {
-  //   throw new ApiError("Something went wrong", res.status);
-  // }
+
   const data = await res.json();
   if (data.success) {
     return data;
   }
-  throw new ApiError(data.message, res.status);
+  throw new ApiError(data.message || "Something went wrong", res.status);
 }
 
 export default {

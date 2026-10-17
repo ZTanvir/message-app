@@ -91,7 +91,14 @@ export default function Chat() {
       );
     },
     onSuccess: (data) => {
-      setMessage("");
+      if (data.success) {
+        if (data.type === "TEXT") {
+          setMessage("");
+        } else {
+          setSelectedFiles([]);
+        }
+      }
+
       console.log("message sent response:", data);
     },
     onError: (error) => {
