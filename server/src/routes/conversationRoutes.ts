@@ -16,7 +16,7 @@ conversationRoute.get("/participants", getParticipants);
 conversationRoute.post("/with/:userId", addConversationMessage);
 
 conversationRoute.get(
-  "/:conversationId/message",
+  "/:conversationId/messages",
   validateBody(ConversationIdSchema),
   async (req, res) => {
     const { conversationId } = req.body;
