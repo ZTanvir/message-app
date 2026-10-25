@@ -76,6 +76,8 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<UploadedFile[]>([]);
   const [errorMessage, setErrorMessage] = useState<string[] | null>(null);
+  const [conversationId, setConversationId] = useState<null | number>(null);
+
   const mutation = useMutation({
     mutationFn: ({
       receiverId,
@@ -97,9 +99,8 @@ export default function Chat() {
         } else {
           setSelectedFiles([]);
         }
+        setConversationId(data.data.conversation_id);
       }
-
-      console.log("message sent response:", data);
     },
     onError: (error) => {
       console.log("file error", error.message);
@@ -197,7 +198,8 @@ export default function Chat() {
         </button>
       </header>
       <main className="flex h-[92%] flex-col px-4 py-6">
-        <div></div>
+        {conversationId && <div>message</div>}
+
         <form
           id="conversation"
           onSubmit={handleSubmitMessage}
