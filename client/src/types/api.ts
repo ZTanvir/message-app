@@ -17,7 +17,12 @@ export type Profile = {
   profileImgUrl?: string | null;
 };
 export type MessageType = "TEXT" | "FILE";
-export type LastMessage = { body: string; type: MessageType; created_at: Date };
+export type LastMessage = {
+  body: string;
+  type: MessageType;
+  created_at: Date;
+  conversation_id: number;
+};
 
 export type Participants = {
   id: string;
@@ -29,3 +34,20 @@ export type Participants = {
     profileImgUrl: string;
   };
 };
+
+interface SendMessageData {
+  conversation_id: number;
+  sender_id: number;
+}
+interface SuccessSendMessage {
+  success: true;
+  message: string;
+  type: MessageType;
+  data: SendMessageData;
+}
+interface SuccessFailedMessage {
+  success: false;
+  message: string;
+  status: number;
+}
+export type SendMessageApiResponse = SuccessSendMessage | SuccessFailedMessage;

@@ -55,6 +55,7 @@ export default function Conversation() {
     queryFn: () => messagesService.getParticipants(),
   });
   const { chatId } = useParams();
+
   const handleRetryFetch = () => {
     refetch();
   };
@@ -110,6 +111,7 @@ export default function Conversation() {
                 avatarImg: user.profile.profileImgUrl,
                 firstName: user.profile.firstName,
                 lastName: user.profile.lastName,
+                conversationId: user.lastMessage?.conversation_id,
               }}
               to={String(user.id)}
             >

@@ -43,9 +43,10 @@ export async function getParticipants(req: Request, res: Response) {
       const lastMessage = await prisma.message.findFirst({
         where: {
           OR: [
-            { sender_id: user.id },
+            { sender_id: user.id, receiver_id: loggedInUser.id },
             {
               sender_id: loggedInUser.id,
+              receiver_id: user.id,
             },
           ],
         },
@@ -55,12 +56,12 @@ export async function getParticipants(req: Request, res: Response) {
         select: {
           body: true,
           type: true,
+          conversation_id: true,
           sender_id: true,
           receiver_id: true,
           created_at: true,
         },
       });
-
       usersWithMessage.push({ ...user, lastMessage });
     }
 

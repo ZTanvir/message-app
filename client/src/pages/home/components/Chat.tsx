@@ -76,8 +76,6 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<UploadedFile[]>([]);
   const [errorMessage, setErrorMessage] = useState<string[] | null>(null);
-  const [conversationId, setConversationId] = useState<null | number>(null);
-
   const mutation = useMutation({
     mutationFn: ({
       receiverId,
@@ -99,18 +97,20 @@ export default function Chat() {
         } else {
           setSelectedFiles([]);
         }
-        setConversationId(data.data.conversation_id);
       }
     },
     onError: (error) => {
       console.log("file error", error.message);
     },
   });
-  const { email, avatarImg, firstName, lastName } = location.state || {};
+  const { email, avatarImg, firstName, lastName, conversationId } =
+    location.state || {};
   const fullName = firstName + " " + lastName;
   const profileImgUrl = avatarImg
     ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/message_app/${avatarImg}`
     : null;
+  console.log(conversationId);
+
   const handleSubmitMessage = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -198,8 +198,7 @@ export default function Chat() {
         </button>
       </header>
       <main className="flex h-[92%] flex-col px-4 py-6">
-        {conversationId && <div>message</div>}
-
+        {conversationId && <div>conversation id:{conversationId}</div>}
         <form
           id="conversation"
           onSubmit={handleSubmitMessage}

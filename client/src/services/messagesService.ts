@@ -1,6 +1,10 @@
 import { ApiError } from "./apiError";
 import { apiUrl } from "./config";
-import type { Participants, MessageType } from "../types/api";
+import type {
+  Participants,
+  MessageType,
+  SendMessageApiResponse,
+} from "../types/api";
 
 async function getParticipants(): Promise<Participants[]> {
   const res = await fetch(`${apiUrl}/api/conversation/participants`, {
@@ -15,24 +19,6 @@ async function getParticipants(): Promise<Participants[]> {
   }
   throw new ApiError(data.message, res.status);
 }
-
-interface SendMessageData {
-  conversation_id: number;
-  sender_id: number;
-}
-
-interface SuccessSendMessage {
-  success: true;
-  message: string;
-  type: MessageType;
-  data: SendMessageData;
-}
-interface SuccessFailedMessage {
-  success: false;
-  message: string;
-  status: number;
-}
-type SendMessageApiResponse = SuccessSendMessage | SuccessFailedMessage;
 
 async function sendMessage(
   receiverId: string,
