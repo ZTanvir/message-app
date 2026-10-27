@@ -4,6 +4,7 @@ import type {
   Participants,
   MessageType,
   SendMessageApiResponse,
+  GetConversationApiResponse,
 } from "../types/api";
 
 async function getParticipants(): Promise<Participants[]> {
@@ -45,7 +46,9 @@ async function sendMessage(
   throw new ApiError(data.message || "Something went wrong", res.status);
 }
 
-async function getConversation(conversationId: number) {
+async function getConversation(
+  conversationId: number,
+): Promise<GetConversationApiResponse> {
   const res = await fetch(
     `${apiUrl}/api/conversation/${conversationId}/messages`,
     { credentials: "include" },
@@ -62,7 +65,10 @@ async function getConversation(conversationId: number) {
     }
   }
   const data = await res.json();
-  return data;
+  if (data.success) return data;
+  else {
+    throw new ApiError("Something went wrong", 500);
+  }
 }
 
 export default {

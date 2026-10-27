@@ -29,6 +29,7 @@ export default function Messages({ conversationId }: MessagesProps) {
       </div>
     );
   }
+  console.log();
 
   return <div>Messages :{conversationId}</div>;
 }

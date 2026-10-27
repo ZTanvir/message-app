@@ -45,9 +45,23 @@ interface SuccessSendMessage {
   type: MessageType;
   data: SendMessageData;
 }
-interface SuccessFailedMessage {
+interface FailedSendMessage {
   success: false;
   message: string;
   status: number;
 }
-export type SendMessageApiResponse = SuccessSendMessage | SuccessFailedMessage;
+export type SendMessageApiResponse = SuccessSendMessage | FailedSendMessage;
+
+interface Message {
+  id: number;
+  conversation_id: number;
+  sender_id: string;
+  body: string;
+  type: MessageType;
+  receiver_id: string;
+  created_at: Date;
+}
+
+export type GetConversationApiResponse = {
+  conversations: Message[];
+};
