@@ -16,6 +16,7 @@ import { SendMessageSchema } from "../../../utils/schemas/zodSchemas/apiSchemas"
 import { cn } from "../../../utils/schemas/cn";
 import { maxFileSize } from "../../../constants";
 import z from "zod";
+import Messages from "./Messages";
 
 interface UploadedFile extends File {
   isLarge: boolean;
@@ -109,8 +110,12 @@ export default function Chat() {
   const profileImgUrl = avatarImg
     ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/message_app/${avatarImg}`
     : null;
-  console.log(conversationId);
 
+  const conversationSection = conversationId ? (
+    <Messages conversationId={conversationId} />
+  ) : (
+    <div>Conversation not started yet</div>
+  );
   const handleSubmitMessage = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -198,7 +203,7 @@ export default function Chat() {
         </button>
       </header>
       <main className="flex h-[92%] flex-col px-4 py-6">
-        {conversationId && <div>conversation id:{conversationId}</div>}
+        {conversationSection}
         <form
           id="conversation"
           onSubmit={handleSubmitMessage}

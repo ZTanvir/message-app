@@ -45,7 +45,28 @@ async function sendMessage(
   throw new ApiError(data.message || "Something went wrong", res.status);
 }
 
+async function getConversation(conversationId: number) {
+  const res = await fetch(
+    `${apiUrl}/api/conversation/${conversationId}/messages`,
+    { credentials: "include" },
+  );
+
+  if (!res.ok) {
+    switch (res.status) {
+      case 400: {
+        const data = await res.json();
+        throw new ApiError(data.error, res.status);
+      }
+      default:
+        throw new ApiError("Something went wrong", res.status);
+    }
+  }
+  const data = await res.json();
+  return data;
+}
+
 export default {
   getParticipants,
   sendMessage,
+  getConversation,
 };

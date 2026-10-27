@@ -18,9 +18,10 @@ export function validateBody<T extends z.ZodType>(schema: T) {
   };
 }
 
-export function validateQuery<T extends z.ZodType>(schema: T) {
+export function validateParams<T extends z.ZodType>(schema: T) {
   return function validate(req: Request, res: Response, next: NextFunction) {
-    const result = schema.safeParse(req.query);
+    const result = schema.safeParse(req.params);
+
     if (!result.success) {
       const formatErrors = z.flattenError(result.error);
       return res.status(400).json({
@@ -29,7 +30,7 @@ export function validateQuery<T extends z.ZodType>(schema: T) {
         details: formatErrors.fieldErrors,
       });
     } else {
-      (req as Request<any, any, any, z.infer<T>>).query = result.data;
+      (req as Request<any, any, any, z.infer<T>>).params = result.data;
       next();
     }
   };

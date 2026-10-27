@@ -6,8 +6,10 @@ import {
   addConversationMessage,
 } from "../controllers/conversationController.ts";
 import { prisma } from "../lib/prisma.ts";
-import { validateBody } from "../middlewares/validation.ts";
+import { validateParams } from "../middlewares/validation.ts";
 import { ConversationIdSchema } from "../utils/zodSchemas/index.ts";
+import { Prisma } from "../../prisma/generated/prisma/client.ts";
+import AppError from "../utils/appError.ts";
 
 conversationRoute.use(passport.authenticate("jwt", { session: false }));
 
@@ -17,13 +19,13 @@ conversationRoute.post("/with/:userId", addConversationMessage);
 
 conversationRoute.get(
   "/:conversationId/messages",
-  validateBody(ConversationIdSchema),
+  validateParams(ConversationIdSchema),
   async (req, res) => {
-    const { conversationId } = req.body;
+    const { conversationId } = req.params;
     try {
       const messages = await prisma.message.findMany({
         where: {
-          conversation_id: conversationId,
+          conversation_id: Number(conversationId),
         },
         orderBy: {
           created_at: "desc",
@@ -32,9 +34,14 @@ conversationRoute.get(
       console.log(messages);
       return res.status(200).json({
         success: true,
-        messages,
+        conversations: messages,
       });
-    } catch (error) {}
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new AppError("Db query known error", Number(error.code));
+      }
+      throw new AppError("Db error", 500);
+    }
   },
 );
 
