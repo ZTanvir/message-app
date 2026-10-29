@@ -5,6 +5,7 @@ import ErrorMessage from "../../../components/ErrorMessage";
 import { useAuth } from "../../../hooks";
 import { cn } from "../../../utils/schemas/cn";
 import { supabaseBucketUrl } from "../../../constants";
+import { Link } from "react-router";
 
 type MessagesProps = {
   conversationId: number;
@@ -34,10 +35,17 @@ export default function Messages({ conversationId }: MessagesProps) {
     );
   }
   if (!loggedInUserId) {
-    return;
+    return (
+      <div className="flex w-full flex-1 items-center justify-center">
+        <div>
+          <p>Please login to continue</p>
+          <Link to={"/login"}>
+            <button>Login</button>
+          </Link>
+        </div>
+      </div>
+    );
   }
-
-  console.log("data", data, auth.user);
 
   return (
     <div>
