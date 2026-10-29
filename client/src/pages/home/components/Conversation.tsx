@@ -4,11 +4,11 @@ import messagesService from "../../../services/messagesService";
 import { Bars3CenterLeftIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import Spinner from "../../../components/Spinner";
 import type { Participants } from "../../../types/api";
-import viteEnv from "../../../../env";
 import ProfileImg from "../../../components/ProfileImg";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { cn } from "../../../utils/schemas/cn";
+import { supabaseBucketUrl } from "../../../constants";
 
 function Participant({
   profile,
@@ -16,7 +16,7 @@ function Participant({
 }: Omit<Participants, "id" | "email">) {
   const fullname = profile.firstName + profile.lastName;
   const profileImgUrl = profile.profileImgUrl
-    ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/message_app/${profile.profileImgUrl}`
+    ? `${supabaseBucketUrl}/${profile.profileImgUrl}`
     : null;
 
   const lastConversation = lastMessage?.body ? (

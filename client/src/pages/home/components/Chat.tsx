@@ -1,5 +1,4 @@
 import { Link, useLocation, useParams } from "react-router";
-import viteEnv from "../../../../env";
 import ProfileImg from "../../../components/ProfileImg";
 import {
   EllipsisVerticalIcon,
@@ -14,7 +13,7 @@ import messagesService from "../../../services/messagesService";
 import type { MessageType } from "../../../types/api";
 import { SendMessageSchema } from "../../../utils/schemas/zodSchemas/apiSchemas";
 import { cn } from "../../../utils/schemas/cn";
-import { maxFileSize } from "../../../constants";
+import { maxFileSize, supabaseBucketUrl } from "../../../constants";
 import z from "zod";
 import Messages from "./Messages";
 
@@ -107,9 +106,7 @@ export default function Chat() {
   const { email, avatarImg, firstName, lastName, conversationId } =
     location.state || {};
   const fullName = firstName + " " + lastName;
-  const profileImgUrl = avatarImg
-    ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/message_app/${avatarImg}`
-    : null;
+  const profileImgUrl = avatarImg ? `${supabaseBucketUrl}/${avatarImg}` : null;
 
   const conversationSection = conversationId ? (
     <Messages conversationId={conversationId} />
