@@ -48,30 +48,28 @@ export default function Messages({ conversationId }: MessagesProps) {
   }
 
   return (
-    <div>
-      <div className="flex flex-col gap-3">
-        {data.conversations.map((msg) => (
-          <div
-            className={cn(
-              "rounded-sm",
-              loggedInUserId === msg.sender_id
-                ? "self-start bg-gray-800/10"
-                : "self-end bg-orange-600 text-white",
-            )}
-            key={msg.id}
-          >
-            {msg.type === "TEXT" ? (
-              <p className="px-3 py-1">{msg.body}</p>
-            ) : (
-              <img
-                className="rounded-sm p-3"
-                src={`${supabaseBucketUrl}/${msg.body}`}
-                alt="message image"
-              />
-            )}
-          </div>
-        ))}
-      </div>
+    <div className="flex flex-1 flex-col gap-3 overflow-y-auto">
+      {data.conversations.map((msg) => (
+        <div
+          className={cn(
+            "rounded-sm",
+            loggedInUserId === msg.sender_id
+              ? "self-start bg-gray-800/10"
+              : "self-end bg-orange-600 text-white",
+          )}
+          key={msg.id}
+        >
+          {msg.type === "TEXT" ? (
+            <p className="px-3 py-1">{msg.body}</p>
+          ) : (
+            <img
+              className="rounded-sm p-3"
+              src={`${supabaseBucketUrl}/${msg.body}`}
+              alt="message image"
+            />
+          )}
+        </div>
+      ))}
     </div>
   );
 }

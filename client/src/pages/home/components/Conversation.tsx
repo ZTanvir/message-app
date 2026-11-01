@@ -94,7 +94,7 @@ export default function Conversation() {
     );
   }
   return (
-    <div className="flex min-h-[92dvh] lg:h-full">
+    <div className="flex h-[92dvh] lg:h-full">
       <div
         className={cn(
           "w-full shadow-md md:w-4/10 md:border-r md:border-gray-300",
