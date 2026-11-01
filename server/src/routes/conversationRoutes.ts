@@ -28,7 +28,7 @@ conversationRoute.get(
           conversation_id: Number(conversationId),
         },
         orderBy: {
-          created_at: "desc",
+          created_at: "asc",
         },
       });
       console.log(messages);

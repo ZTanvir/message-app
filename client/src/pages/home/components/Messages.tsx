@@ -48,7 +48,7 @@ export default function Messages({ conversationId }: MessagesProps) {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-3 overflow-y-auto">
+    <div className="flex flex-1 flex-col gap-3 overflow-y-auto py-1">
       {data.conversations.map((msg) => (
         <div
           className={cn(
