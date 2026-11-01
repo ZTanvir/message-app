@@ -8,7 +8,7 @@ import {
   XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import messagesService from "../../../services/messagesService";
 import type { MessageType } from "../../../types/api";
 import { SendMessageSchema } from "../../../utils/schemas/zodSchemas/apiSchemas";
@@ -72,6 +72,7 @@ interface SendMessageVariables {
 
 export default function Chat() {
   const location = useLocation();
+  const queryClient = useQueryClient();
   const { chatId } = useParams();
   const [message, setMessage] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<UploadedFile[]>([]);
@@ -90,13 +91,16 @@ export default function Chat() {
         formData,
       );
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (data.success) {
         if (data.type === "TEXT") {
           setMessage("");
         } else {
           setSelectedFiles([]);
         }
+        await queryClient.invalidateQueries({
+          queryKey: ["conversation-messages", conversationId],
+        });
       }
     },
     onError: (error) => {
