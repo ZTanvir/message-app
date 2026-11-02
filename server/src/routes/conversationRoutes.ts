@@ -22,19 +22,34 @@ conversationRoute.get(
   validateParams(ConversationIdSchema),
   async (req, res) => {
     const { conversationId } = req.params;
+    const { lastLoadedMsgCreatedAt } = req.query;
+    const limit = 10;
     try {
-      const messages = await prisma.message.findMany({
+      const rows = await prisma.message.findMany({
         where: {
           conversation_id: Number(conversationId),
+          ...(lastLoadedMsgCreatedAt && {
+            created_at: {
+              lt: new Date(lastLoadedMsgCreatedAt as string),
+            },
+          }),
         },
-        orderBy: {
-          created_at: "asc",
-        },
+        orderBy: [
+          {
+            created_at: "desc",
+          },
+          { id: "desc" },
+        ],
+        take: limit + 1,
       });
+      const hasMore = rows.length > limit;
+      const messages = hasMore ? rows.slice(0, limit) : rows;
+
       console.log(messages);
       return res.status(200).json({
         success: true,
-        conversations: messages,
+        conversations: messages.toReversed(),
+        hasMore,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {

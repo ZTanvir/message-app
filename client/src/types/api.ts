@@ -64,4 +64,5 @@ interface Message {
 
 export type GetConversationApiResponse = {
   conversations: Message[];
+  hasMore: boolean;
 };
