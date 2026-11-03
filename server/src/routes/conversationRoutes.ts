@@ -44,12 +44,13 @@ conversationRoute.get(
       });
       const hasMore = rows.length > limit;
       const messages = hasMore ? rows.slice(0, limit) : rows;
+      const nextCursor = hasMore ? rows[rows.length - 1].conversation_id : null;
 
-      console.log(messages);
       return res.status(200).json({
         success: true,
         conversations: messages.toReversed(),
         hasMore,
+        nextCursor,
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {

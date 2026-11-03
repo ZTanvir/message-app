@@ -46,11 +46,15 @@ async function sendMessage(
   throw new ApiError(data.message || "Something went wrong", res.status);
 }
 
-async function getConversation(
-  conversationId: number,
-): Promise<GetConversationApiResponse> {
+async function getConversation({
+  conversationId,
+  lastLoadedMsgCreatedAt = null,
+}: {
+  conversationId: number;
+  lastLoadedMsgCreatedAt: unknown;
+}): Promise<GetConversationApiResponse> {
   const res = await fetch(
-    `${apiUrl}/api/conversation/${conversationId}/messages`,
+    `${apiUrl}/api/conversation/${conversationId}/messages?lastLoadedMsgCreatedAt=${lastLoadedMsgCreatedAt}`,
     { credentials: "include" },
   );
 

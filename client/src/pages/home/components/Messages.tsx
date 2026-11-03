@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import messagesService from "../../../services/messagesService";
 import Spinner from "../../../components/Spinner";
 import ErrorMessage from "../../../components/ErrorMessage";
@@ -6,14 +6,35 @@ import { useAuth } from "../../../hooks";
 import { cn } from "../../../utils/schemas/cn";
 import { supabaseBucketUrl } from "../../../constants";
 import { Link } from "react-router";
+import React from "react";
+import type { GetConversationApiResponse } from "../../../types/api";
 
 type MessagesProps = {
   conversationId: number;
 };
 export default function Messages({ conversationId }: MessagesProps) {
-  const { isPending, isError, data, error, refetch } = useQuery({
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+    isPending,
+    isError,
+    refetch,
+  } = useInfiniteQuery({
     queryKey: ["conversation-messages", conversationId],
-    queryFn: () => messagesService.getConversation(conversationId),
+    queryFn: async ({ pageParam }): Promise<GetConversationApiResponse> =>
+      messagesService.getConversation({
+        conversationId,
+        lastLoadedMsgCreatedAt: pageParam,
+      }),
+    initialPageParam: null as string,
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextCursor ?? undefined;
+    },
   });
   const auth = useAuth();
   const loggedInUserId = auth.user?.id;
@@ -49,27 +70,30 @@ export default function Messages({ conversationId }: MessagesProps) {
 
   return (
     <div className="flex flex-1 flex-col gap-3 overflow-y-auto py-1">
-      {data.hasMore && <button>Load more</button>}
-      {data.conversations.map((msg) => (
-        <div
-          className={cn(
-            "rounded-sm",
-            loggedInUserId === msg.sender_id
-              ? "self-start bg-gray-800/10"
-              : "self-end bg-orange-600 text-white",
-          )}
-          key={msg.id}
-        >
-          {msg.type === "TEXT" ? (
-            <p className="px-3 py-1">{msg.body}</p>
-          ) : (
-            <img
-              className="rounded-sm p-3"
-              src={`${supabaseBucketUrl}/${msg.body}`}
-              alt="message image"
-            />
-          )}
-        </div>
+      {data.pages.map((group, pageIndex) => (
+        <React.Fragment key={pageIndex}>
+          {group.data.map((msg) => (
+            <div
+              className={cn(
+                "rounded-sm",
+                loggedInUserId === msg.sender_id
+                  ? "self-start bg-gray-800/10"
+                  : "self-end bg-orange-600 text-white",
+              )}
+              key={msg.id}
+            >
+              {msg.type === "TEXT" ? (
+                <p className="px-3 py-1">{msg.body}</p>
+              ) : (
+                <img
+                  className="rounded-sm p-3"
+                  src={`${supabaseBucketUrl}/${msg.body}`}
+                  alt="message image"
+                />
+              )}
+            </div>
+          ))}
+        </React.Fragment>
       ))}
     </div>
   );
