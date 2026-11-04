@@ -26,15 +26,23 @@ export default function Messages({ conversationId }: MessagesProps) {
     refetch,
   } = useInfiniteQuery({
     queryKey: ["conversation-messages", conversationId],
-    queryFn: async ({ pageParam }): Promise<GetConversationApiResponse> =>
+    queryFn: async ({
+      pageParam,
+    }: {
+      pageParam: number | null;
+    }): Promise<GetConversationApiResponse> =>
       messagesService.getConversation({
         conversationId,
         lastLoadedMsgCreatedAt: pageParam,
       }),
-    initialPageParam: null as string,
+    initialPageParam: null,
     getNextPageParam: (lastPage) => {
       return lastPage.nextCursor ?? undefined;
     },
+    select: (data) => ({
+      pages: [...data.pages].reverse(),
+      pageParams: [...data.pageParams].reverse(),
+    }),
   });
   const auth = useAuth();
   const loggedInUserId = auth.user?.id;
@@ -70,9 +78,21 @@ export default function Messages({ conversationId }: MessagesProps) {
 
   return (
     <div className="flex flex-1 flex-col gap-3 overflow-y-auto py-1">
+      {hasNextPage && (
+        <button
+          className="mx-auto flex max-w-fit items-center justify-center gap-2 rounded-sm bg-blue-900/70 px-3 py-2 text-white transition-colors duration-200 hover:cursor-pointer hover:bg-blue-900/50"
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+        >
+          <span>{isFetchingNextPage ? "Loading more" : "Load more"}</span>
+          <span className="self-center">
+            {isFetchingNextPage && <Spinner classname="w-5 h-5 " />}
+          </span>
+        </button>
+      )}
       {data.pages.map((group, pageIndex) => (
         <React.Fragment key={pageIndex}>
-          {group.data.map((msg) => (
+          {group.conversations.map((msg) => (
             <div
               className={cn(
                 "rounded-sm",
