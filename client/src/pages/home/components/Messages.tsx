@@ -18,9 +18,7 @@ export default function Messages({ conversationId }: MessagesProps) {
     error,
     fetchNextPage,
     hasNextPage,
-    isFetching,
     isFetchingNextPage,
-    status,
     isPending,
     isError,
     refetch,
@@ -36,6 +34,7 @@ export default function Messages({ conversationId }: MessagesProps) {
         lastLoadedMsgCreatedAt: pageParam,
       }),
     initialPageParam: null,
+    refetchInterval: 3 * 1000,
     getNextPageParam: (lastPage) => {
       return lastPage.nextCursor ?? undefined;
     },
@@ -90,31 +89,33 @@ export default function Messages({ conversationId }: MessagesProps) {
           </span>
         </button>
       )}
-      {data.pages.map((group, pageIndex) => (
-        <React.Fragment key={pageIndex}>
-          {group.conversations.map((msg) => (
-            <div
-              className={cn(
-                "rounded-sm",
-                loggedInUserId === msg.sender_id
-                  ? "self-start bg-gray-800/10"
-                  : "self-end bg-orange-600 text-white",
-              )}
-              key={msg.id}
-            >
-              {msg.type === "TEXT" ? (
-                <p className="px-3 py-1">{msg.body}</p>
-              ) : (
-                <img
-                  className="rounded-sm p-3"
-                  src={`${supabaseBucketUrl}/${msg.body}`}
-                  alt="message image"
-                />
-              )}
-            </div>
-          ))}
-        </React.Fragment>
-      ))}
+      <div className="flex flex-1 flex-col justify-end gap-3">
+        {data.pages.map((group, pageIndex) => (
+          <React.Fragment key={pageIndex}>
+            {group.conversations.map((msg) => (
+              <div
+                className={cn(
+                  "rounded-sm",
+                  loggedInUserId === msg.sender_id
+                    ? "self-start bg-gray-800/10"
+                    : "self-end bg-orange-600 text-white",
+                )}
+                key={msg.id}
+              >
+                {msg.type === "TEXT" ? (
+                  <p className="px-3 py-1">{msg.body}</p>
+                ) : (
+                  <img
+                    className="rounded-sm p-3"
+                    src={`${supabaseBucketUrl}/${msg.body}`}
+                    alt="message image"
+                  />
+                )}
+              </div>
+            ))}
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   );
 }
