@@ -34,7 +34,7 @@ export default function Messages({ conversationId }: MessagesProps) {
         lastLoadedMsgCreatedAt: pageParam,
       }),
     initialPageParam: null,
-    refetchInterval: 3 * 1000,
+    refetchInterval: 3 * 1000, // 3 sec
     getNextPageParam: (lastPage) => {
       return lastPage.nextCursor ?? undefined;
     },
