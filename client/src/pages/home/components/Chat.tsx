@@ -103,9 +103,6 @@ export default function Chat() {
         });
       }
     },
-    onError: (error) => {
-      console.log("file error", error.message);
-    },
   });
   const { email, avatarImg, firstName, lastName, conversationId } =
     location.state || {};
@@ -115,7 +112,7 @@ export default function Chat() {
   const conversationSection = conversationId ? (
     <Messages conversationId={conversationId} />
   ) : (
-    <div>Conversation not started yet</div>
+    <div className="text-center md:text-xl">Conversation not started yet</div>
   );
   const handleSubmitMessage = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();

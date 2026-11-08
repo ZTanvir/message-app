@@ -5,7 +5,6 @@ import ErrorMessage from "../../../components/ErrorMessage";
 import { useAuth } from "../../../hooks";
 import { cn } from "../../../utils/schemas/cn";
 import { supabaseBucketUrl } from "../../../constants";
-import { Link } from "react-router";
 import React from "react";
 import type { GetConversationApiResponse } from "../../../types/api";
 
@@ -66,10 +65,10 @@ export default function Messages({ conversationId }: MessagesProps) {
     return (
       <div className="flex w-full flex-1 items-center justify-center">
         <div>
-          <p>Please login to continue</p>
+          {/* <p>Please login to continue</p>
           <Link to={"/login"}>
             <button>Login</button>
-          </Link>
+          </Link> */}
         </div>
       </div>
     );
