@@ -22,7 +22,7 @@ export async function getParticipants(req: Request, res: Response) {
     const users = await prisma.user.findMany({
       where: {
         NOT: {
-          // user don't message with his
+          // user don't message with himself
           id: loggedInUser.id,
         },
       },
@@ -31,6 +31,7 @@ export async function getParticipants(req: Request, res: Response) {
         id: true,
         profile: {
           select: {
+            userId: true,
             firstName: true,
             lastName: true,
             profileImgUrl: true,

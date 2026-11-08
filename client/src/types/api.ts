@@ -29,6 +29,7 @@ export type Participants = {
   email: string;
   lastMessage: null | LastMessage;
   profile: {
+    userId: string;
     firstName: string;
     lastName: string;
     profileImgUrl: string;

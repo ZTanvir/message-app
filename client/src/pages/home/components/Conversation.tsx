@@ -10,10 +10,17 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { cn } from "../../../utils/schemas/cn";
 import { supabaseBucketUrl } from "../../../constants";
 
+type ParticipantProps = {
+  participantId: string;
+  profile: Participants["profile"];
+  lastMessage: Participants["lastMessage"];
+};
+
 function Participant({
+  participantId,
   profile,
   lastMessage,
-}: Omit<Participants, "id" | "email">) {
+}: ParticipantProps) {
   const fullname = profile.firstName + profile.lastName;
   const profileImgUrl = profile.profileImgUrl
     ? `${supabaseBucketUrl}/${profile.profileImgUrl}`
@@ -31,20 +38,44 @@ function Participant({
   ) : (
     `Chat with ${fullname}`
   );
+  const { chatId } = useParams();
 
   dayjs.extend(relativeTime);
   const timeAgo = lastMessage?.created_at
     ? dayjs(lastMessage.created_at).fromNow()
     : null;
 
+  const isActiveParticipant = chatId === participantId;
+
   return (
-    <div className="flex items-center gap-x-2 border-b border-b-gray-200 px-4 py-2">
+    <div
+      className={cn(
+        "flex items-center gap-x-2 border-b border-b-gray-200 px-4 py-2",
+        isActiveParticipant && "bg-orange-500 text-white",
+      )}
+    >
       <ProfileImg imageUrl={profileImgUrl} className="h-12 w-12 rounded-full" />
       <div className="flex-1">
         <h3>{fullname}</h3>
-        <p className="text-xs text-gray-700">{lastConversation}</p>
+        <p
+          className={cn(
+            "text-xs text-gray-700",
+            isActiveParticipant && "bg-orange-500 text-white",
+          )}
+        >
+          {lastConversation}
+        </p>
       </div>
-      {timeAgo && <p className="self-start text-xs text-gray-700">{timeAgo}</p>}
+      {timeAgo && (
+        <p
+          className={cn(
+            "self-start text-xs text-gray-700",
+            isActiveParticipant && "text-white",
+          )}
+        >
+          {timeAgo}
+        </p>
+      )}
     </div>
   );
 }
@@ -116,6 +147,7 @@ export default function Conversation() {
               to={String(user.id)}
             >
               <Participant
+                participantId={user.id}
                 profile={user.profile}
                 lastMessage={user.lastMessage}
               />
