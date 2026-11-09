@@ -55,27 +55,29 @@ function Participant({
       )}
     >
       <ProfileImg imageUrl={profileImgUrl} className="h-12 w-12 rounded-full" />
-      <div className="flex-1">
-        <h3>{fullname}</h3>
+      <div className="grid flex-1 grid-cols-2 grid-rows-[auto_1fr] gap-1">
+        <h3 className="col-start-1 col-end-2 row-start-1 row-end-2">
+          {fullname}
+        </h3>
         <p
           className={cn(
-            "text-xs text-gray-700",
+            "col-start-1 col-end-3 row-start-2 row-end-3 text-xs text-gray-700",
             isActiveParticipant && "bg-orange-500 text-white",
           )}
         >
           {lastConversation}
         </p>
+        {timeAgo && (
+          <p
+            className={cn(
+              "col-start-2 row-start-1 row-end-2 self-center text-xs text-gray-700",
+              isActiveParticipant && "text-white",
+            )}
+          >
+            {timeAgo}
+          </p>
+        )}
       </div>
-      {timeAgo && (
-        <p
-          className={cn(
-            "self-start text-xs text-gray-700",
-            isActiveParticipant && "text-white",
-          )}
-        >
-          {timeAgo}
-        </p>
-      )}
     </div>
   );
 }
