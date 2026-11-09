@@ -208,15 +208,15 @@ export default function Chat() {
           encType="multipart/form-data"
           className="relative mt-auto mb-6 rounded-lg border border-gray-300 shadow-md lg:mb-0"
         >
-          <div className="flex-1">
-            <input
+          <div className="h-full">
+            <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              type="text"
               name="message"
+              rows={1}
               id="message"
               placeholder="Send your message.."
-              className="w-full px-4 py-4"
+              className="h-full w-8/10 px-4 py-3"
               autoComplete="off"
             />
           </div>

@@ -102,7 +102,7 @@ export default function Messages({ conversationId }: MessagesProps) {
                 key={msg.id}
               >
                 {msg.type === "TEXT" ? (
-                  <p className="px-3 py-1">{msg.body}</p>
+                  <p className="px-3 py-1 whitespace-pre-wrap">{msg.body}</p>
                 ) : (
                   <img
                     className="rounded-sm p-3"
