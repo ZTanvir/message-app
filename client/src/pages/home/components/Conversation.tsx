@@ -61,7 +61,7 @@ function Participant({
         </h3>
         <p
           className={cn(
-            "col-start-1 col-end-3 row-start-2 row-end-3 text-xs text-gray-700",
+            "col-start-1 col-end-3 row-start-2 row-end-3 truncate text-xs text-gray-700",
             isActiveParticipant && "bg-orange-500 text-white",
           )}
         >
@@ -70,7 +70,7 @@ function Participant({
         {timeAgo && (
           <p
             className={cn(
-              "col-start-2 row-start-1 row-end-2 self-center text-xs text-gray-700",
+              "col-start-2 row-start-1 row-end-2 self-center justify-self-end text-xs text-gray-700",
               isActiveParticipant && "text-white",
             )}
           >
