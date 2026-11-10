@@ -44,7 +44,7 @@ export default function Sidebar() {
       <nav className="flex w-full justify-between lg:h-full lg:flex-col">
         <div className="flex gap-x-4 lg:flex-col lg:gap-y-4">
           <NavLink
-            to="/home"
+            to="/messages"
             className={({ isActive }) =>
               isActive ? `${activeLinkClass}` : `${inactiveLinkClass}`
             }

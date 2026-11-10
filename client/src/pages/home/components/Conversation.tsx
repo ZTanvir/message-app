@@ -1,0 +1,163 @@
+import { useQuery } from "@tanstack/react-query";
+import { Link, Outlet, useParams } from "react-router";
+import messagesService from "../../../services/messagesService";
+import { Bars3CenterLeftIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import Spinner from "../../../components/Spinner";
+import type { Participants } from "../../../types/api";
+import ProfileImg from "../../../components/ProfileImg";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { cn } from "../../../utils/schemas/cn";
+import { supabaseBucketUrl } from "../../../constants";
+
+type ParticipantProps = {
+  participantId: string;
+  profile: Participants["profile"];
+  lastMessage: Participants["lastMessage"];
+};
+
+function Participant({
+  participantId,
+  profile,
+  lastMessage,
+}: ParticipantProps) {
+  const fullname = profile.firstName + profile.lastName;
+  const profileImgUrl = profile.profileImgUrl
+    ? `${supabaseBucketUrl}/${profile.profileImgUrl}`
+    : null;
+
+  const lastConversation = lastMessage?.body ? (
+    lastMessage.type === "TEXT" ? (
+      lastMessage.body
+    ) : (
+      <span>
+        <PhotoIcon className="h-3 w-3" />
+        <span className="sr-only">Image file</span>
+      </span>
+    )
+  ) : (
+    `Chat with ${fullname}`
+  );
+  const { chatId } = useParams();
+
+  dayjs.extend(relativeTime);
+  const timeAgo = lastMessage?.created_at
+    ? dayjs(lastMessage.created_at).fromNow()
+    : null;
+
+  const isActiveParticipant = chatId === participantId;
+
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-x-2 border-b border-b-gray-200 px-4 py-2",
+        isActiveParticipant && "bg-orange-500 text-white",
+      )}
+    >
+      <ProfileImg imageUrl={profileImgUrl} className="h-12 w-12 rounded-full" />
+      <div className="grid flex-1 grid-cols-2 grid-rows-[auto_1fr] gap-1">
+        <h3 className="col-start-1 col-end-2 row-start-1 row-end-2">
+          {fullname}
+        </h3>
+        <p
+          className={cn(
+            "col-start-1 col-end-3 row-start-2 row-end-3 truncate text-xs text-gray-700",
+            isActiveParticipant && "bg-orange-500 text-white",
+          )}
+        >
+          {lastConversation}
+        </p>
+        {timeAgo && (
+          <p
+            className={cn(
+              "col-start-2 row-start-1 row-end-2 self-center justify-self-end text-xs text-gray-700",
+              isActiveParticipant && "text-white",
+            )}
+          >
+            {timeAgo}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default function Conversation() {
+  const { isPending, isError, data, error, refetch } = useQuery({
+    queryKey: ["messages"],
+    queryFn: () => messagesService.getParticipants(),
+  });
+  const { chatId } = useParams();
+
+  const handleRetryFetch = () => {
+    refetch();
+  };
+  const Header = (
+    <header className="flex h-20 flex-col border-b border-b-gray-200">
+      <h2 className="flex items-center gap-x-1 px-4 py-6">
+        <Bars3CenterLeftIcon className="h-7 w-7" />
+        <span className="text-2xl">User Messages</span>
+      </h2>
+    </header>
+  );
+  if (isPending) {
+    return (
+      <div className="flex min-h-[92dvh] w-1/3 flex-col border-r border-gray-300 shadow-md lg:h-full">
+        {Header}
+        <div className="flex flex-1 items-center justify-center">
+          <Spinner classname="md:w-10 md:h-10 lg:w-15 lg:h-15 border-3" />
+        </div>
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="flex min-h-[92vh] w-1/3 flex-col border-r border-gray-300 shadow-md lg:h-full">
+        {Header}
+        <div className="flex flex-1 flex-col items-center justify-center gap-y-1">
+          <p>{error.message || "Something went wrong"}</p>
+          <button
+            className="rounded-md bg-orange-400 px-3 py-1 text-sm text-white transition-colors duration-300 hover:cursor-pointer hover:bg-orange-400/80"
+            onClick={handleRetryFetch}
+          >
+            Try again
+          </button>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="flex h-[92dvh] lg:h-full">
+      <div
+        className={cn(
+          "w-full shadow-md md:w-4/10 md:border-r md:border-gray-300",
+          chatId && "hidden md:block",
+        )}
+      >
+        {Header}
+        <div className="overflow-auto">
+          {data.map((user) => (
+            <Link
+              key={user.id}
+              state={{
+                email: user.email,
+                avatarImg: user.profile.profileImgUrl,
+                firstName: user.profile.firstName,
+                lastName: user.profile.lastName,
+                conversationId: user.lastMessage?.conversation_id,
+              }}
+              to={String(user.id)}
+            >
+              <Participant
+                participantId={user.id}
+                profile={user.profile}
+                lastMessage={user.lastMessage}
+              />
+            </Link>
+          ))}
+        </div>
+      </div>
+      <Outlet />
+    </div>
+  );
+}

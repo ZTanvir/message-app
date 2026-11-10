@@ -1,6 +1,10 @@
 import { useState } from "react";
 import type { Profile } from "../../../types/api";
-import { PencilIcon } from "@heroicons/react/24/outline";
+import {
+  PencilIcon,
+  BriefcaseIcon,
+  MapPinIcon,
+} from "@heroicons/react/24/outline";
 import { EditProfileSchema } from "@message-app/shared/zodSchemas/validationSchema";
 import profileService from "../../../services/profileService";
 import { useParams } from "react-router";
@@ -188,16 +192,16 @@ export default function Profession({ profile }: ProfessionProps) {
       ) : (
         <div className="mt-25 flex-1 text-center md:mt-0 md:text-left">
           <h2 className="text-4xl">{fullName}</h2>
-          {profile.profession ? (
-            <p className="opacity-80">{profile.profession}</p>
-          ) : (
-            <p className="opacity-80">Profession not added yet.</p>
-          )}
-          {profile.location ? (
-            <p className="opacity-80">{profile.location}</p>
-          ) : (
-            <p className="opacity-80">Location not added yet.</p>
-          )}
+
+          <p className="flex items-center gap-x-1 opacity-80">
+            <BriefcaseIcon className="h-4 w-4" />
+            {profile.profession || "Profession not added yet."}
+          </p>
+
+          <p className="flex items-center gap-x-1 opacity-80">
+            <MapPinIcon className="h-4 w-4" />
+            {profile.location || "Location not added yet."}
+          </p>
         </div>
       )}
 

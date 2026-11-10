@@ -8,12 +8,12 @@ import Spinner from "../../components/Spinner";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useRef } from "react";
 import type { DialogHandle } from "../../types/types";
-import viteEnv from "../../../env";
 import { cn } from "../../utils/schemas/cn";
 import Modal from "../../components/Modal";
 import PhotoEditContainer from "./components/PhotoEdit";
 import Profession from "./components/Profession";
 import AboutMe from "./components/AboutMe";
+import { supabaseBucketUrl } from "../../constants";
 
 export default function ProfilePage() {
   const { userId } = useParams();
@@ -34,10 +34,10 @@ export default function ProfilePage() {
   }
 
   const coverImgUrl = data.user.coverImgUrl
-    ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/message_app/${data.user.coverImgUrl}`
+    ? `${supabaseBucketUrl}/${data.user.coverImgUrl}`
     : null;
   const profileImgUrl = data.user.profileImgUrl
-    ? `${viteEnv.VITE_SUPABASE_PUBLIC_URL}/message_app/${data.user.profileImgUrl}`
+    ? `${supabaseBucketUrl}/${data.user.profileImgUrl}`
     : null;
 
   const handleOpenCoverPhotoDialog = () => {
