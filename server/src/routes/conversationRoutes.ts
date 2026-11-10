@@ -4,12 +4,10 @@ import passport from "passport";
 import {
   getParticipants,
   addConversationMessage,
+  conversationMessages,
 } from "../controllers/conversationController.ts";
-import { prisma } from "../lib/prisma.ts";
 import { validateParams } from "../middlewares/validation.ts";
 import { ConversationIdSchema } from "../utils/zodSchemas/index.ts";
-import { Prisma } from "../../prisma/generated/prisma/client.ts";
-import AppError from "../utils/appError.ts";
 
 conversationRoute.use(passport.authenticate("jwt", { session: false }));
 
@@ -20,49 +18,7 @@ conversationRoute.post("/with/:userId", addConversationMessage);
 conversationRoute.get(
   "/:conversationId/messages",
   validateParams(ConversationIdSchema),
-  async (req, res) => {
-    const { conversationId } = req.params;
-    let lastLoadedMsgCreatedAt = req.query.lastLoadedMsgCreatedAt as
-      string | null;
-    lastLoadedMsgCreatedAt =
-      lastLoadedMsgCreatedAt === "null" ? null : lastLoadedMsgCreatedAt;
-    console.log(lastLoadedMsgCreatedAt);
-
-    const limit = 5;
-    try {
-      const rows = await prisma.message.findMany({
-        where: {
-          conversation_id: Number(conversationId),
-          ...(lastLoadedMsgCreatedAt && {
-            created_at: {
-              lt: new Date(lastLoadedMsgCreatedAt as string),
-            },
-          }),
-        },
-        orderBy: [
-          {
-            created_at: "desc",
-          },
-          { id: "desc" },
-        ],
-        take: limit + 1,
-      });
-      const hasMore = rows.length > limit;
-      const messages = hasMore ? rows.slice(0, limit) : rows;
-      const nextCursor = hasMore ? rows[rows.length - 1].created_at : null;
-
-      return res.status(200).json({
-        success: true,
-        conversations: messages.toReversed(),
-        nextCursor,
-      });
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new AppError("Db query known error", Number(error.code));
-      }
-      throw new AppError("Db error", 500);
-    }
-  },
+  conversationMessages,
 );
 
 export default conversationRoute;
