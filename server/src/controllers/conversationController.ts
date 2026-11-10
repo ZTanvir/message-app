@@ -222,3 +222,49 @@ export async function addConversationMessage(
     }
   });
 }
+export async function conversationMessage(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const { conversationId } = req.params;
+  let lastLoadedMsgCreatedAt = req.query.lastLoadedMsgCreatedAt as
+    string | null;
+  lastLoadedMsgCreatedAt =
+    lastLoadedMsgCreatedAt === "null" ? null : lastLoadedMsgCreatedAt;
+
+  const limit = 5;
+  try {
+    const rows = await prisma.message.findMany({
+      where: {
+        conversation_id: Number(conversationId),
+        ...(lastLoadedMsgCreatedAt && {
+          created_at: {
+            lt: new Date(lastLoadedMsgCreatedAt as string),
+          },
+        }),
+      },
+      orderBy: [
+        {
+          created_at: "desc",
+        },
+        { id: "desc" },
+      ],
+      take: limit + 1,
+    });
+    const hasMore = rows.length > limit;
+    const messages = hasMore ? rows.slice(0, limit) : rows;
+    const nextCursor = hasMore ? rows[rows.length - 1].created_at : null;
+
+    return res.status(200).json({
+      success: true,
+      conversations: messages.toReversed(),
+      nextCursor,
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      throw new AppError("Db query known error", Number(error.code));
+    }
+    throw new AppError("Db error", 500);
+  }
+}
