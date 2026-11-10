@@ -222,7 +222,7 @@ export async function addConversationMessage(
     }
   });
 }
-export async function conversationMessage(
+export async function conversationMessages(
   req: Request,
   res: Response,
   next: NextFunction,

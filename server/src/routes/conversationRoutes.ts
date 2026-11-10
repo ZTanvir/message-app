@@ -4,7 +4,7 @@ import passport from "passport";
 import {
   getParticipants,
   addConversationMessage,
-  conversationMessage,
+  conversationMessages,
 } from "../controllers/conversationController.ts";
 import { validateParams } from "../middlewares/validation.ts";
 import { ConversationIdSchema } from "../utils/zodSchemas/index.ts";
@@ -18,7 +18,7 @@ conversationRoute.post("/with/:userId", addConversationMessage);
 conversationRoute.get(
   "/:conversationId/messages",
   validateParams(ConversationIdSchema),
-  conversationMessage,
+  conversationMessages,
 );
 
 export default conversationRoute;
