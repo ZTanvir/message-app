@@ -16,6 +16,12 @@ model User {
   profile      Profile?
 }
 
+model Friends {
+  id       Int    @id @default(autoincrement())
+  userId   String
+  friendId String
+}
+
 model Profile {
   id            Int      @id @default(autoincrement())
   userId        String   @unique

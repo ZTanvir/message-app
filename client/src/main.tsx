@@ -13,6 +13,7 @@ import AppPage from "./pages/app";
 import ProfilePage from "./pages/profile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Chat from "./pages/home/components/Chat";
+import FriendsPage from "./pages/friends/FriendsPage";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ createRoot(document.getElementById("root")!).render(
                 <Route path=":chatId" element={<Chat />} />
               </Route>
               <Route path="/profile/:userId" element={<ProfilePage />} />
+              <Route path="/friends" element={<FriendsPage />} />
             </Route>
 
             <Route element={<AuthLayout />}>

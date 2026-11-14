@@ -3,6 +3,7 @@ import Logo from "./Logo";
 import {
   ChatBubbleLeftIcon,
   UserIcon,
+  UsersIcon,
   ArrowLeftStartOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { useAuthContext } from "../hooks/contextConsume";
@@ -58,6 +59,14 @@ export default function Sidebar() {
             }
           >
             <UserIcon className={`${IconClass}`} />
+          </NavLink>
+          <NavLink
+            to={`/friends`}
+            className={({ isActive }) =>
+              isActive ? `${activeLinkClass}` : `${inactiveLinkClass}`
+            }
+          >
+            <UsersIcon className={`${IconClass}`} />
           </NavLink>
         </div>
         <div className="flex gap-x-4 lg:flex-col lg:gap-y-4">
