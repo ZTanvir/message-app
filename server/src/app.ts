@@ -10,6 +10,7 @@ import authRoute from "./routes/authRoutes.ts";
 import profileRoute from "./routes/profileRoutes.ts";
 import conversationRoute from "./routes/conversationRoutes.ts";
 import globalErrorHandler from "./middlewares/globalErrorHandler.ts";
+import friendsRoute from "./routes/friendsRoutes.ts";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -36,6 +37,7 @@ app.get("/health", async (req, res) => {
 app.use("/api/auth", authRoute);
 app.use("/api/profile", profileRoute);
 app.use("/api/conversation", conversationRoute);
+app.use("/api/friends", friendsRoute);
 
 app.use(globalErrorHandler);
 
