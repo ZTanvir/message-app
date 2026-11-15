@@ -8,18 +8,28 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique @db.VarChar(50)
-  hashPassword String   @db.VarChar(255)
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
-  profile      Profile?
+  id                    String       @id @default(uuid())
+  email                 String       @unique @db.VarChar(50)
+  hashPassword          String       @db.VarChar(255)
+  created_at            DateTime     @default(now())
+  updated_at            DateTime     @updatedAt
+  profile               Profile?
+  sentFriendRequest     Friendship[] @relation("Requester")
+  receivedFriendRequest Friendship[] @relation("Addressee")
 }
 
-model Friends {
-  id       Int    @id @default(autoincrement())
-  userId   String
-  friendId String
+enum FriendshipStatus {
+  ACCEPT
+  PENDING
+}
+
+model Friendship {
+  id          Int              @id @default(autoincrement())
+  requesterId String
+  addresseeId String
+  status      FriendshipStatus @default(PENDING)
+  requester   User             @relation("Requester", fields: [requesterId], references: [id], onDelete: Cascade)
+  addressee   User             @relation("Addressee", fields: [addresseeId], references: [id], onDelete: Cascade)
 }
 
 model Profile {
